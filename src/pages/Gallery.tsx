@@ -1,15 +1,16 @@
 import { motion } from 'motion/react';
 import { useState } from 'react';
+import { Instagram, ArrowRight } from 'lucide-react';
 
 const galleryItems = [
-  { id: 1, type: 'before', url: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&q=80&w=800', title: 'Rear End Collision' },
-  { id: 2, type: 'after', url: 'https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?auto=format&fit=crop&q=80&w=800', title: 'Rear End Restore' },
-  { id: 3, type: 'process', url: 'https://images.unsplash.com/photo-1590400541360-3af4b0ef06b0?auto=format&fit=crop&q=80&w=800', title: 'Frame Machine Work' },
-  { id: 4, type: 'finish', url: 'https://images.unsplash.com/photo-1594970544557-00a6888c99f8?auto=format&fit=crop&q=80&w=800', title: 'Luxury Paint Finish' },
-  { id: 5, type: 'before', url: 'https://images.unsplash.com/photo-1598370162598-be90203f56bc?auto=format&fit=crop&q=80&w=800', title: 'Front End Damage' },
-  { id: 6, type: 'after', url: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=800', title: 'Front End Restore' },
-  { id: 7, type: 'process', url: 'https://images.unsplash.com/photo-1503376780353-7e66a876a170?auto=format&fit=crop&q=80&w=800', title: 'Custom Spraying' },
-  { id: 8, type: 'finish', url: 'https://images.unsplash.com/photo-1507136566006-2c5e5265b6f3?auto=format&fit=crop&q=80&w=800', title: 'Gloss Perfection' },
+  { id: 1, type: 'before', url: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&q=80&w=800', title: 'Rear End Impact' },
+  { id: 2, type: 'after', url: 'https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?auto=format&fit=crop&q=80&w=800', title: 'Structural Restoration' },
+  { id: 3, type: 'process', url: 'https://images.unsplash.com/photo-1590400541360-3af4b0ef06b0?auto=format&fit=crop&q=80&w=800', title: 'Frame Precision Work' },
+  { id: 4, type: 'finish', url: 'https://images.unsplash.com/photo-1594970544557-00a6888c99f8?auto=format&fit=crop&q=80&w=800', title: 'Luxury Refinishing' },
+  { id: 5, type: 'before', url: 'https://images.unsplash.com/photo-1598370162598-be90203f56bc?auto=format&fit=crop&q=80&w=800', title: 'Front Collision Damage' },
+  { id: 6, type: 'after', url: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=800', title: 'Factory-Grade Restore' },
+  { id: 7, type: 'process', url: 'https://images.unsplash.com/photo-1503376780353-7e66a876a170?auto=format&fit=crop&q=80&w=800', title: 'Certified Painting' },
+  { id: 8, type: 'finish', url: 'https://images.unsplash.com/photo-1507136566006-2c5e5265b6f3?auto=format&fit=crop&q=80&w=800', title: 'Gloss Verification' },
 ];
 
 export default function Gallery() {
@@ -20,30 +21,32 @@ export default function Gallery() {
     : galleryItems.filter(item => item.type === filter || (filter === 'after' && item.type === 'finish'));
 
   return (
-    <div className="pt-32 pb-24 relative overflow-hidden bg-iron">
-      <div className="absolute inset-0 blueprint-grid opacity-10 pointer-events-none"></div>
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-20 border-b border-chrome/10 pb-10">
+    <div className="pt-24 lg:pt-32 pb-24 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-end gap-12 mb-20">
           <div className="max-w-3xl">
-            <span className="micro-label text-primary mb-4 block">Visual Evidence / 06</span>
-            <h1 className="text-6xl sm:text-[120px] font-display tracking-tighter uppercase leading-[0.75] text-white">The <br /> Operation.</h1>
+            <span className="text-primary font-bold uppercase tracking-widest text-xs mb-4 block">Visual Proof</span>
+            <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-slate-900 leading-[1.1]">
+              Excellence in <br />
+              <span className="text-primary">Restoration.</span>
+            </h1>
           </div>
-          <p className="text-chrome/60 max-w-sm text-sm font-sans font-light leading-relaxed text-right">
-            Every pixel represents a verified restoration. Witness the transition from wreckage to precision.
+          <p className="text-slate-600 max-w-sm text-lg leading-relaxed font-medium">
+            Explore our portfolio of certified restoration projects, documenting the journey from wreckage to factory-perfect results.
           </p>
         </div>
 
         {/* Filter Controls */}
-        <div className="flex flex-wrap gap-2 mb-12">
+        <div className="flex flex-wrap gap-4 mb-16">
           {['all', 'before', 'after', 'process'].map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f as any)}
-              className={`px-8 py-3 font-nav font-bold text-2xl uppercase tracking-tighter transition-all rounded-none ${
+              className={`px-6 py-2.5 rounded-full font-bold text-sm tracking-widest uppercase transition-all border duration-300 ${
                 filter === f 
-                  ? 'bg-primary text-white shadow-lg shadow-primary/20' 
-                  : 'bg-engine text-chrome/60 hover:text-white hover:bg-engine/80 border border-chrome/10'
+                  ? 'bg-primary text-white border-primary shadow-lg shadow-primary/30' 
+                  : 'bg-white text-slate-500 hover:text-slate-900 border-slate-200 hover:border-slate-400'
               }`}
             >
               {f}
@@ -52,41 +55,50 @@ export default function Gallery() {
         </div>
 
         {/* Gallery Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 border border-chrome/10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {filteredItems.map((item, i) => (
             <motion.div
               layout
               key={item.id}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="relative aspect-square overflow-hidden group cursor-pointer border-r border-b border-chrome/10 last:border-r-0"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4 }}
+              className="relative aspect-square overflow-hidden group rounded-2xl shadow-sm border border-slate-100"
             >
               <img 
                 src={item.url} 
                 alt={item.title} 
-                className="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-700 group-hover:scale-105"
+                className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
                 referrerPolicy="no-referrer"
               />
-              <div className="absolute inset-0 bg-iron/80 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8">
-                <span className="micro-label text-primary mb-2">Protocol: {item.type}</span>
-                <h4 className="text-3xl font-display uppercase tracking-tighter leading-none text-white">{item.title}</h4>
+              <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8 backdrop-blur-[2px]">
+                <span className="text-primary text-[10px] font-bold uppercase tracking-[0.2em] mb-2 block">Stage: {item.type}</span>
+                <h4 className="text-xl font-bold leading-tight text-white">{item.title}</h4>
               </div>
-              <div className="absolute top-4 right-4 micro-label text-white/10 font-nav">0{i+1}</div>
             </motion.div>
           ))}
         </div>
 
-        <div className="mt-32 tech-card p-16 text-center max-w-4xl mx-auto border-t-4 border-primary">
-          <span className="micro-label text-primary mb-6 block">Real-time Stream</span>
-          <h3 className="text-5xl md:text-7xl font-display mb-8 uppercase tracking-tighter leading-none text-white">Access the <br />Full Feed.</h3>
-          <p className="text-chrome/60 mb-10 max-w-lg mx-auto text-sm font-sans font-light leading-relaxed">
-            Follow our high-intensity restorative stream on Instagram for daily operational updates.
-          </p>
-          <a href="#" className="inline-block bg-primary hover:bg-white text-iron px-12 py-5 font-nav font-bold text-2xl transition-all uppercase tracking-tighter rounded-none">
-             Follow @AMCollision
-          </a>
+        {/* Social Feed Banner */}
+        <div className="mt-32 bg-slate-900 rounded-3xl p-12 lg:p-20 text-center relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/10 rounded-full blur-[120px] translate-x-1/2"></div>
+          
+          <div className="relative z-10 max-w-2xl mx-auto">
+            <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-primary mb-8 mx-auto">
+               <Instagram className="w-8 h-8" />
+            </div>
+            <h3 className="text-3xl md:text-5xl font-bold mb-8 text-white leading-tight">Follow Our Daily <br />Restoration Journey.</h3>
+            <p className="text-slate-400 mb-12 text-lg font-medium leading-relaxed">
+              Stay connected with our workshop. We post daily behind-the-scenes content and recently finished projects on our official social channels.
+            </p>
+            <a 
+               href="#" 
+               className="inline-flex items-center gap-3 bg-white hover:bg-slate-100 text-slate-900 px-10 py-5 rounded-2xl font-bold text-lg transition-all shadow-xl"
+            >
+               <span>@AMCollision</span>
+               <ArrowRight className="w-5 h-5 text-primary" />
+            </a>
+          </div>
         </div>
       </div>
     </div>

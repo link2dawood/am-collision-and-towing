@@ -26,26 +26,26 @@ export default function Navbar({ currentPage, setPage }: NavbarProps) {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div 
-            className="flex items-center gap-2 cursor-pointer group"
+            className="flex items-center gap-3 cursor-pointer group"
             onClick={() => setPage('home')}
           >
-            <div className="bg-primary p-1.5 rounded-none group-hover:scale-110 transition-transform">
-              <div className="w-6 h-6 flex items-center justify-center font-black text-white italic text-sm">AM</div>
+            <div className="bg-primary p-2 rounded-lg group-hover:scale-105 transition-transform">
+              <div className="w-6 h-6 flex items-center justify-center font-bold text-white text-xs">AM</div>
             </div>
             <div>
-              <span className="text-2xl font-display tracking-tighter block leading-none text-white group-hover:text-primary transition-colors">AM COLLISION</span>
-              <span className="micro-label text-primary block mt-1 tracking-[0.4em] opacity-80">& TOWING</span>
+              <span className="text-xl font-bold tracking-tight block leading-tight text-slate-900 group-hover:text-primary transition-colors">AM Collision</span>
+              <span className="text-[10px] font-bold text-primary block tracking-widest uppercase">& Towing</span>
             </div>
           </div>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-10">
+          <div className="hidden md:flex items-center gap-8">
             {navItems.map((item) => (
               <button
                 key={item.value}
                 onClick={() => setPage(item.value)}
-                className={`micro-label transition-all hover:text-primary ${
-                  currentPage === item.value ? 'text-primary' : 'text-chrome/60'
+                className={`text-sm font-semibold transition-all hover:text-primary ${
+                  currentPage === item.value ? 'text-primary' : 'text-slate-600'
                 }`}
               >
                 {item.label}
@@ -53,9 +53,9 @@ export default function Navbar({ currentPage, setPage }: NavbarProps) {
             ))}
             <a 
               href="tel:+15551234567"
-              className="flex items-center gap-2 border border-primary hover:bg-primary px-6 py-2 rounded-none font-nav font-bold text-xl text-primary hover:text-white uppercase italic tracking-tighter transition-all"
+              className="flex items-center gap-2 bg-primary hover:bg-primary-dark px-5 py-2.5 rounded-lg font-bold text-sm text-white transition-all shadow-md shadow-primary/20"
             >
-              24/7 Rapid Response
+              (555) 123-4567
             </a>
           </div>
 

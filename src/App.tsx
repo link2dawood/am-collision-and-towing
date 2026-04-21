@@ -69,7 +69,7 @@ export default function App() {
           href="tel:+15551234567"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="flex items-center gap-2 bg-primary hover:bg-white text-iron px-6 py-4 rounded-none font-nav font-bold shadow-2xl shadow-primary/20 group uppercase tracking-widest border border-primary"
+          className="flex items-center gap-3 bg-primary hover:bg-primary-dark text-white px-6 py-4 rounded-xl font-bold shadow-2xl shadow-primary/30 group tracking-tight border border-primary/20"
         >
           <span className="relative flex h-3 w-3">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>

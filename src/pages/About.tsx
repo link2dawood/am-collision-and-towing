@@ -1,93 +1,98 @@
 import { motion } from 'motion/react';
-import { Award, Shield, Users, Target, History, Trophy } from 'lucide-react';
+import { Award, Shield, Users, Target, CheckCircle, Award as Trophy } from 'lucide-react';
 
 export default function About() {
   return (
-    <div className="pt-24 lg:pt-32 pb-24 relative overflow-hidden bg-iron">
-      <div className="absolute inset-0 blueprint-grid opacity-10 pointer-events-none"></div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center mb-32 border-b border-chrome/10 pb-20">
+    <div className="pt-24 lg:pt-32 pb-24 bg-white">
+      {/* Hero Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative mb-32">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
           >
-            <span className="micro-label text-primary mb-6 block">Legacy Data / 07</span>
-            <h1 className="text-6xl sm:text-8xl md:text-[140px] font-display tracking-tighter uppercase mb-12 leading-[0.75] text-white">
-              ENGINEERED <br />
-              <span className="text-primary italic">INTEGRITY.</span>
+            <span className="text-primary font-bold uppercase tracking-widest text-xs mb-4 block">Our Story</span>
+            <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8 text-slate-900 leading-[1.1]">
+              Restoring Performance, <br />
+              <span className="text-primary">Defining Quality.</span>
             </h1>
-            <div className="space-y-8 text-chrome/60 text-lg font-sans font-light leading-relaxed">
+            <div className="space-y-6 text-slate-600 text-lg leading-relaxed max-w-xl font-medium">
               <p>
-                Founded on the principles of heavy industrial honesty. AM Collision & Towing was built to restore machinery that other shops deemed beyond recovery.
+                Founded in 2009, AM Collision was built on the principle that every vehicle deserves factory-specification restoration. We combine decades of technical expertise with modern equipment to return your car to its peak condition.
               </p>
               <p>
-                We operate within factory tolerances. Zero deviation. Every weld, every bolt, every micron of paint is calculated for performance.
+                From meticulous structural realignment to precision paint matching, our certified master technicians ensure your safety and satisfaction are the primary metrics of our success.
               </p>
             </div>
           </motion.div>
 
           <div className="relative">
-            <div className="aspect-[4/5] rounded-none overflow-hidden border border-chrome/10 group">
+            <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border border-slate-100 group">
               <img 
                 src="https://images.unsplash.com/photo-1530046339160-ce3e545b7a0c?auto=format&fit=crop&q=80&w=1200" 
-                alt="Our Facility" 
-                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105"
+                alt="Our Professional Facility" 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
                 referrerPolicy="no-referrer"
               />
             </div>
-            <div className="absolute -bottom-10 -right-10 tech-card bg-primary p-12 text-white transition-all duration-500 hover:rotate-2 shadow-2xl rounded-none">
-              <h4 className="text-6xl font-display font-black mb-2 tracking-tighter italic">GOLD CLASS</h4>
-              <p className="micro-label text-white/60 font-black">I-CAR Certified Facility</p>
+            <div className="absolute -bottom-10 -left-10 bg-white p-8 shadow-2xl rounded-2xl border border-slate-100 max-w-[240px]">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4">
+                 <Shield className="w-6 h-6" />
+              </div>
+              <h4 className="text-xl font-bold text-slate-900 mb-2 leading-tight">I-CAR GOLD CLASS</h4>
+              <p className="text-xs text-slate-500 font-bold uppercase tracking-wider">Certified Facility</p>
             </div>
           </div>
         </div>
+      </section>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-chrome/10 mb-32">
+      {/* Trust Pillars */}
+      <section className="bg-slate-50 py-24 mb-32 border-y border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            { title: 'The Standard', desc: 'OEM specifications or nothing. We do not compromise on the blueprint.', icon: <Target className="w-8 h-8" />, num: '01' },
-            { title: 'The Grid', desc: 'Locally built, globally trained. We support the infrastructure that drives us.', icon: <Users className="w-8 h-8" />, num: '02' },
-            { title: 'The Shield', desc: 'Ironclad lifetime support on all structural alignment and restoration.', icon: <Shield className="w-8 h-8" />, num: '03' },
+            { title: 'The Standard', desc: 'OEM specifications are our baseline. We never compromise on structural integrity or safety blueprints.', icon: <Target className="w-8 h-8" /> },
+            { title: 'The Community', desc: 'Locally owned and operated. We are proud to support the communities that drive our business forward.', icon: <Users className="w-8 h-8" /> },
+            { title: 'The Promise', desc: 'We provide a comprehensive lifetime warranty on all structural alignment and refinishing.', icon: <CheckCircle className="w-8 h-8" /> },
           ].map((item, i) => (
-            <div key={i} className="tech-card h-[380px] flex flex-col justify-end group border-l-0 first:border-l last:border-r border-chrome/10 overflow-hidden">
-               <div className="num text-chrome">{item.num}</div>
-               <div className="relative z-10 font-sans">
-                <div className="w-16 h-16 bg-iron flex items-center justify-center text-primary mb-8 group-hover:bg-primary group-hover:text-white transition-all rounded-none border border-chrome/10">
-                  {item.icon}
-                </div>
-                <h3 className="text-3xl font-display uppercase tracking-tighter text-white group-hover:text-primary transition-colors leading-none">{item.title}</h3>
-                <p className="text-chrome/50 text-xs font-sans font-light leading-relaxed mb-8 uppercase tracking-widest">{item.desc}</p>
+            <div key={i} className="bg-white p-10 rounded-2xl shadow-sm border border-slate-100 hover:border-primary/20 transition-all flex flex-col gap-6">
+              <div className="w-16 h-16 rounded-xl bg-slate-50 flex items-center justify-center text-primary shadow-inner">
+                {item.icon}
+              </div>
+              <h3 className="text-2xl font-bold text-slate-900 leading-tight">{item.title}</h3>
+              <p className="text-slate-600 leading-relaxed font-medium">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Protocols Section */}
+      <section id="protocols" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-32">
+        <div className="text-center mb-24 max-w-2xl mx-auto">
+          <span className="text-primary font-bold uppercase tracking-widest text-xs mb-4 block">Our Methodology</span>
+          <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">Repair Excellence Protocols</h2>
+          <p className="text-lg text-slate-600">A systematic, transparent journey from initial damage assessment to verified safety clearance.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          {[
+            { title: 'Safety Integrity', text: 'Safety is absolute. We never compromise on factory-spec structural repairs or material quality.' },
+            { title: 'Advanced Technology', text: 'Continuous investment in 3D frame alignment and thermal imaging for high-performance precision.' },
+            { title: 'Restored Excellence', text: 'Every restoration is a return-to-factory event. Near-perfect finishing is our only standard.' },
+            { title: 'Full Transparency', text: 'Stay informed with clear communication and direct documentation throughout the entire cycle.' },
+          ].map((v, i) => (
+            <div key={i} className="flex gap-8 group items-start p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:bg-white transition-colors duration-300">
+              <div className="shrink-0 w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-primary font-bold text-xl">
+                 {i + 1}
+              </div>
+              <div>
+                <h4 className="text-2xl font-bold mb-3 text-slate-900 group-hover:text-primary transition-colors leading-tight">{v.title}</h4>
+                <p className="text-slate-600 leading-relaxed font-medium text-sm">{v.text}</p>
               </div>
             </div>
           ))}
         </div>
-
-        {/* Core Values */}
-        <div id="protocols" className="bg-engine p-12 sm:p-24 border border-chrome/10 relative overflow-hidden">
-          <div className="max-w-3xl mx-auto text-center mb-24">
-            <span className="micro-label text-primary mb-6 block">System Values / 08</span>
-            <h2 className="text-5xl md:text-8xl font-display uppercase mb-4 tracking-tighter leading-none text-white">The Protocols</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-24">
-            {[
-              { year: 'Zero Tolerance', text: 'Safety is absolute. We never compromise on structural integrity or material quality.' },
-              { year: 'Fleet Pulse', text: 'Investing in robotic frame alignment and thermal imaging to repair high-performance aluminum.' },
-              { year: 'Output Max', text: 'Every restoration is a return-to-factory event. Excellence is the only metric.' },
-              { year: 'Raw Data', text: 'Complete transparency. Direct access to your vehicle diagnostic feed during the repair cycle.' },
-            ].map((v, i) => (
-              <div key={i} className="flex gap-10 group items-start">
-                <div className="shrink-0 w-3 h-3 bg-primary group-hover:scale-150 transition-all mt-2"></div>
-                <div>
-                  <h4 className="text-3xl font-display font-black mb-4 uppercase text-white tracking-tighter group-hover:text-primary transition-colors leading-none">{v.year}</h4>
-                  <p className="text-chrome/60 text-sm font-sans font-light leading-relaxed">{v.text}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
   );
 }

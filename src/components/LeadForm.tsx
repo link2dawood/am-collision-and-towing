@@ -52,7 +52,7 @@ export default function LeadForm() {
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto glass p-6 sm:p-8 rounded-none relative overflow-hidden ring-1 ring-chrome/10">
+    <div className="w-full">
       <AnimatePresence mode="wait">
         {submitStatus === 'success' ? (
           <motion.div
@@ -62,13 +62,13 @@ export default function LeadForm() {
             className="text-center py-12"
           >
             <CheckCircle2 className="w-16 h-16 text-primary mx-auto mb-4" />
-            <h3 className="text-2xl font-display font-bold mb-2 text-white">Request Received</h3>
-            <p className="text-chrome/60 mb-6 font-nav uppercase tracking-widest text-xs">Our dispatch team will contact you shortly.</p>
+            <h3 className="text-2xl font-bold mb-2 text-slate-900">Request Received</h3>
+            <p className="text-slate-600 mb-6 font-medium">Our team will contact you shortly.</p>
             <button
               onClick={() => setSubmitStatus('idle')}
-              className="px-6 py-2 bg-primary hover:bg-white text-iron font-nav font-bold rounded-none transition-colors uppercase text-xs tracking-widest"
+              className="px-8 py-3 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all"
             >
-              Send Another
+              Send Another Message
             </button>
           </motion.div>
         ) : (
@@ -76,68 +76,82 @@ export default function LeadForm() {
             onSubmit={handleSubmit(onSubmit)}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="space-y-4"
+            className="space-y-6"
           >
             <div>
-              <label className="block text-[10px] uppercase tracking-widest font-bold text-chrome/50 mb-1 font-nav">Full Name</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
               <input
                 {...register('name')}
-                className="w-full bg-iron border border-chrome/10 rounded-none px-4 py-2 focus:outline-none focus:border-primary transition-colors text-sm text-white font-sans"
-                placeholder="Required"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-slate-900 placeholder:text-slate-400"
+                placeholder="Enter your full name"
               />
-              {errors.name && <p className="text-[10px] text-primary mt-1 uppercase font-bold tracking-tighter font-nav">{errors.name.message}</p>}
+              {errors.name && <p className="text-xs text-primary mt-1.5 font-bold">{errors.name.message}</p>}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-[10px] uppercase tracking-widest font-bold text-chrome/50 mb-1 font-nav">Phone</label>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">Phone Number</label>
                 <input
                   {...register('phone')}
-                  className="w-full bg-iron border border-chrome/10 rounded-none px-4 py-2 focus:outline-none focus:border-primary transition-colors text-sm text-white font-sans"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-slate-900 placeholder:text-slate-400"
                   placeholder="(000) 000-0000"
                 />
-                {errors.phone && <p className="text-[10px] text-primary mt-1 uppercase font-bold tracking-tighter font-nav">{errors.phone.message}</p>}
+                {errors.phone && <p className="text-xs text-primary mt-1.5 font-bold">{errors.phone.message}</p>}
               </div>
               <div>
-                <label className="block text-[10px] uppercase tracking-widest font-bold text-chrome/50 mb-1 font-nav">Email</label>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
                 <input
                   {...register('email')}
-                  className="w-full bg-iron border border-chrome/10 rounded-none px-4 py-2 focus:outline-none focus:border-primary transition-colors text-sm text-white font-sans"
-                  placeholder="Optional"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-slate-900 placeholder:text-slate-400"
+                  placeholder="name@example.com"
                 />
-                {errors.email && <p className="text-[10px] text-primary mt-1 uppercase font-bold tracking-tighter font-nav">{errors.email.message}</p>}
+                {errors.email && <p className="text-xs text-primary mt-1.5 font-bold">{errors.email.message}</p>}
               </div>
             </div>
 
             <div>
-              <label className="block text-[10px] uppercase tracking-widest font-bold text-chrome/50 mb-1 font-nav">Service</label>
-              <select
-                {...register('serviceType')}
-                className="w-full bg-iron border border-chrome/10 rounded-none px-4 py-2 focus:outline-none focus:border-primary transition-colors appearance-none text-sm text-white font-sans"
-              >
-                <option value="Collision Repair">Collision Repair</option>
-                <option value="24/7 Towing">24/7 Towing</option>
-                <option value="Paint & Body Work">Paint & Body Work</option>
-                <option value="Insurance Claim">Insurance Claim</option>
-              </select>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Service Needed</label>
+              <div className="relative">
+                <select
+                  {...register('serviceType')}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all appearance-none text-slate-900"
+                >
+                  <option value="Collision Repair">Collision Repair</option>
+                  <option value="24/7 Towing">24/7 Towing</option>
+                  <option value="Paint & Body Work">Paint & Body Work</option>
+                  <option value="Insurance Claim">Insurance Claim</option>
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-slate-400">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
             </div>
 
             <div>
-              <label className="block text-[10px] uppercase tracking-widest font-bold text-chrome/50 mb-1 font-nav">Details</label>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">Message</label>
               <textarea
                 {...register('message')}
-                rows={3}
-                className="w-full bg-iron border border-chrome/10 rounded-none px-4 py-2 focus:outline-none focus:border-primary transition-colors resize-none text-sm text-white font-sans"
-                placeholder="Brief description..."
+                rows={4}
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3.5 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none text-slate-900 placeholder:text-slate-400"
+                placeholder="How can we help you today?"
               />
             </div>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-primary hover:bg-white text-iron disabled:opacity-50 disabled:cursor-not-allowed py-3 rounded-none font-nav font-bold uppercase tracking-[0.2em] text-xs transition-all flex items-center justify-center gap-2"
+              className="w-full bg-primary hover:bg-primary-dark text-white disabled:opacity-50 disabled:cursor-not-allowed py-4 rounded-xl font-bold uppercase tracking-widest text-sm shadow-xl shadow-primary/25 transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
             >
-              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'TRANSMIT DATA'}
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Sending...</span>
+                </>
+              ) : (
+                'Send Message'
+              )}
             </button>
           </motion.form>
         )}

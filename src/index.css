@@ -1,18 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  --font-display: "Bebas Neue", cursive, sans-serif;
-  --font-nav: "Rajdhani", sans-serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-display: "Inter", sans-serif;
+  --font-nav: "Inter", sans-serif;
   
-  --color-primary: #E8300A; /* Blaze Red */
+  --color-primary: #E8300A; /* Professional Red */
   --color-primary-dark: #C42608;
-  --color-iron: #111111; /* Iron Black */
-  --color-engine: #1E1E1E; /* Engine Gray */
-  --color-bone: #FAF8F4; /* Bone White */
-  --color-chrome: #D8D4CC; /* Chrome */
-  --color-amber: #D4820C; /* Amber Flash */
+  --color-iron: #111111;
+  --color-engine: #1A1A1B;
+  --color-bone: #F8F9FA;
+  --color-chrome: #6C757D; /* Grey for secondary text/borders */
 }
 
 @layer base {
@@ -23,65 +22,47 @@
   }
 
   body {
-    @apply bg-iron text-[#e2e8f0] font-sans font-light relative;
+    @apply bg-white text-slate-900 font-sans font-normal relative;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display uppercase tracking-tight leading-none;
-    font-weight: 400; /* Bebas Neue is 400 */
+    @apply font-display font-bold tracking-tight text-slate-900;
   }
 
   p {
-    @apply font-sans font-light leading-relaxed;
+    @apply font-sans font-normal leading-relaxed text-slate-600;
   }
 
   button {
-    @apply font-nav uppercase tracking-widest cursor-pointer;
+    @apply font-sans font-medium cursor-pointer transition-all duration-200;
   }
 }
 
 @layer utilities {
   .blueprint-grid {
     background-image: 
-      linear-gradient(rgba(216, 212, 204, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(216, 212, 204, 0.05) 1px, transparent 1px);
+      linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
     background-size: 40px 40px;
   }
 
   .text-glow {
-    text-shadow: 0 0 20px rgba(232, 48, 10, 0.4);
+    text-shadow: 0 0 15px rgba(232, 48, 10, 0.2);
   }
   
   .glass {
-    @apply bg-engine/80 backdrop-blur-md border border-chrome/10;
+    @apply bg-white/90 backdrop-blur-md border-b border-slate-200;
   }
   
   .tech-card {
-    @apply bg-engine border border-chrome/10 relative p-8 transition-all duration-300 rounded-none;
+    @apply bg-white border border-slate-200 relative p-8 transition-all duration-300 rounded-lg shadow-sm hover:shadow-md;
   }
 
-  .tech-card::before {
-    content: '';
-    @apply absolute left-0 top-0 w-[4px] h-0 bg-primary transition-all duration-500;
-  }
-
-  .tech-card:hover::before {
-    @apply h-full;
-  }
-
-  .num {
-    @apply font-display text-[80px] font-black absolute -right-4 -bottom-4 opacity-5 leading-none transition-all duration-500;
-  }
-
-  .tech-card:hover .num {
-    @apply opacity-20 translate-x-2 translate-y-2 text-primary;
-  }
-  
   .micro-label {
-    @apply text-[11px] font-nav font-medium uppercase tracking-[0.25em] text-chrome;
+    @apply text-xs font-semibold uppercase tracking-wider text-primary;
   }
 
   .industrial-btn {
-    @apply font-nav font-bold uppercase tracking-widest px-8 py-4 transition-all duration-300 rounded-none inline-flex items-center justify-center gap-2;
+    @apply font-semibold px-8 py-4 transition-all duration-200 rounded-md inline-flex items-center justify-center gap-2;
   }
 }
