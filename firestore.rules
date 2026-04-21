@@ -1,0 +1,60 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isAdmin() {
+      // Bootstrapped admin email check or doc exists check
+      // For this app, we check if the user is in the 'admins' collection
+      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Leads Collection
+    match /leads/{leadId} {
+      allow create: if isValidId(leadId) 
+        && isValidLead(incoming());
+      
+      allow read, list, delete: if isAdmin();
+      
+      allow update: if false; // Leads are immutable once submitted
+    }
+
+    function isValidLead(data) {
+      return data.keys().hasAll(['name', 'phone', 'serviceType', 'createdAt'])
+        && data.keys().size() <= 6 // name, phone, email, serviceType, message, createdAt
+        && data.name is string && data.name.size() >= 2 && data.name.size() <= 100
+        && data.phone is string && data.phone.size() >= 7 && data.phone.size() <= 20
+        && (data.get('email', '') == '' || (data.email is string && data.email.size() <= 100))
+        && data.serviceType is string && data.serviceType.size() <= 50
+        && (data.get('message', '') == '' || (data.message is string && data.message.size() <= 1000))
+        && data.createdAt == request.time;
+    }
+
+    // Admin Collection - only readable by self or other admins
+    match /admins/{adminId} {
+      allow read: if isSignedIn() && (request.auth.uid == adminId || isAdmin());
+      allow write: if false; // Managed via Firebase Console or special script
+    }
+  }
+}

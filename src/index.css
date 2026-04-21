@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bebas Neue", sans-serif;
+  --font-heading: "Bebas Neue", sans-serif;
+  --font-nav: "Rajdhani", sans-serif;
+  
+  --color-primary: #E8300A; /* Blaze Red */
+  --color-primary-dark: #C42608;
+  --color-iron: #111111; /* Iron Black */
+  --color-engine: #1E1E1E; /* Engine Gray */
+  --color-bone: #FAF8F4; /* Bone White */
+  --color-chrome: #D8D4CC; /* Chrome */
+  --color-amber: #D4820C; /* Amber Flash */
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-iron text-[#e2e8f0] font-sans antialiased relative;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display uppercase tracking-tight;
+  }
+
+  p {
+    @apply font-light;
+  }
+}
+
+@layer utilities {
+  .blueprint-grid {
+    background-image: 
+      linear-gradient(rgba(216, 212, 204, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(216, 212, 204, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .text-glow {
+    text-shadow: 0 0 20px rgba(232, 48, 10, 0.4);
+  }
+  
+  .glass {
+    @apply bg-engine/80 backdrop-blur-md border border-chrome/10;
+  }
+  
+  .tech-card {
+    @apply bg-engine border border-chrome/10 relative p-8 transition-all duration-300 rounded-none;
+  }
+
+  .tech-card::before {
+    content: '';
+    @apply absolute left-0 top-0 w-[4px] h-0 bg-primary transition-all duration-500;
+  }
+
+  .tech-card:hover::before {
+    @apply h-full;
+  }
+
+  .num {
+    @apply font-display text-[80px] font-black absolute -right-4 -bottom-4 opacity-5 leading-none transition-all duration-500;
+  }
+
+  .tech-card:hover .num {
+    @apply opacity-20 translate-x-2 translate-y-2 text-primary;
+  }
+  
+  .micro-label {
+    @apply text-[11px] font-nav font-medium uppercase tracking-[0.25em] text-chrome;
+  }
+
+  .industrial-btn {
+    @apply font-nav font-bold uppercase tracking-widest px-8 py-4 transition-all duration-300 rounded-none inline-flex items-center justify-center gap-2;
+  }
+}
