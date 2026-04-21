@@ -34,13 +34,13 @@ export default function Home({ setPage }: HomeProps) {
               <span className="micro-label text-primary">Est. 2009 / Cityville</span>
             </div>
             
-            <h1 className="text-7xl sm:text-8xl md:text-[140px] font-display font-black leading-[0.8] tracking-[-0.04em] mb-8 text-white">
+            <h1 className="text-7xl sm:text-8xl md:text-[140px] font-display leading-[0.8] tracking-[-0.02em] mb-8 text-white">
               WE FIX <br />
               EVERYTHING. <br />
               <span className="text-primary italic">WE TOW.</span>
             </h1>
             
-            <p className="text-lg md:text-xl text-chrome mb-10 max-w-md leading-tight font-light uppercase tracking-tight">
+            <p className="text-lg md:text-xl text-chrome mb-10 max-w-md leading-relaxed font-sans font-light">
               Certified auto body repair and state-of-the-art recovery for modern machinery.
             </p>
             
@@ -68,8 +68,8 @@ export default function Home({ setPage }: HomeProps) {
             ].map((stat, i) => (
               <div key={i} className="border-l-4 border-primary pl-8 group cursor-default">
                 <div className="micro-label mb-2 group-hover:text-primary transition-colors">{stat.label}</div>
-                <div className="text-4xl md:text-5xl font-display font-black tracking-tight mb-1">{stat.val}</div>
-                <div className="text-xs text-chrome/50 font-nav italic uppercase tracking-wider">{stat.sub}</div>
+                <div className="text-4xl md:text-5xl font-display tracking-tight mb-1">{stat.val}</div>
+                <div className="micro-label opacity-50 lowercase tracking-normal italic font-nav">{stat.sub}</div>
               </div>
             ))}
             
@@ -85,7 +85,7 @@ export default function Home({ setPage }: HomeProps) {
         <div className="flex items-center gap-6 mb-20 overflow-hidden">
           <div className="flex flex-col">
             <span className="micro-label text-primary">Operating Specs / 01</span>
-            <h2 className="text-5xl md:text-8xl font-display font-black uppercase tracking-tighter text-white">Full Service <br /> Restoration</h2>
+            <h2 className="text-5xl md:text-8xl font-display uppercase tracking-tighter text-white">Full Service <br /> Restoration</h2>
           </div>
           <div className="flex-grow h-[1px] bg-chrome/10 hidden md:block"></div>
         </div>
@@ -121,10 +121,10 @@ export default function Home({ setPage }: HomeProps) {
                 <div className="text-primary mb-8 group-hover:scale-110 transition-transform duration-500 origin-left">
                   {service.icon}
                 </div>
-                <h3 className="text-4xl font-display font-black mb-4 uppercase tracking-tighter text-white group-hover:text-primary transition-colors">
-                  {service.title}
-                </h3>
-                <p className="text-chrome/70 text-xs font-nav italic leading-relaxed mb-8 max-w-[240px] uppercase tracking-wide">
+                  <h3 className="text-4xl font-display uppercase tracking-tighter text-white group-hover:text-primary transition-colors">
+                    {service.title}
+                  </h3>
+                <p className="text-chrome/70 text-sm font-sans font-light leading-relaxed mb-8 max-w-[260px]">
                   {service.desc}
                 </p>
                 <div className="flex items-center gap-2 group-hover:translate-x-2 transition-transform duration-300">
@@ -143,7 +143,7 @@ export default function Home({ setPage }: HomeProps) {
           <div className="space-y-16">
             <div className="space-y-4">
               <span className="micro-label text-primary">Authority Check / 02</span>
-              <h2 className="text-6xl md:text-[90px] font-display font-black uppercase tracking-tighter leading-[0.8] text-iron">
+              <h2 className="text-6xl md:text-[90px] font-display uppercase tracking-tighter leading-[0.8] text-iron">
                 PRECISION IS <br />THE <span className="text-primary italic">STANDRD.</span>
               </h2>
             </div>
@@ -159,7 +159,7 @@ export default function Home({ setPage }: HomeProps) {
                     {item.icon}
                   </div>
                   <div className="flex flex-col justify-center">
-                    <h4 className="text-2xl font-display font-black uppercase tracking-tight text-iron group-hover:text-primary transition-colors">{item.title}</h4>
+            <h4 className="text-2xl font-display uppercase tracking-tight text-iron group-hover:text-primary transition-colors">{item.title}</h4>
                     <p className="micro-label text-chrome font-light">{item.desc}</p>
                   </div>
                 </div>
@@ -195,7 +195,7 @@ export default function Home({ setPage }: HomeProps) {
       <section id="evidence" className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center border-t border-chrome/10">
         <div className="flex flex-col items-center mb-16">
           <span className="micro-label text-primary">Evidence / 03</span>
-          <h2 className="text-5xl md:text-7xl font-display font-black mb-12 uppercase tracking-tighter text-white">Visual Proof</h2>
+          <h2 className="text-5xl md:text-7xl font-display mb-12 uppercase tracking-tighter text-white">Visual Proof</h2>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border border-chrome/10">
@@ -228,7 +228,7 @@ export default function Home({ setPage }: HomeProps) {
       <section id="cta" className="py-32 relative overflow-hidden bg-engine border-t border-chrome/10">
         <div className="absolute inset-0 blueprint-grid opacity-20"></div>
         <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
-          <h2 className="text-6xl md:text-[140px] font-display font-black mb-12 uppercase tracking-tighter leading-[0.75] text-white">
+          <h2 className="text-6xl md:text-[140px] font-display mb-12 uppercase tracking-tighter leading-[0.75] text-white">
             WE FIX <br />
             <span className="text-primary italic">STILL.</span>
           </h2>

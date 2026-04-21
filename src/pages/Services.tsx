@@ -49,7 +49,7 @@ export default function Services() {
         <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-24 border-b border-chrome/10 pb-10">
           <div className="max-w-3xl">
             <span className="micro-label text-primary mb-4 block">System Capabilities / 04</span>
-            <h1 className="text-6xl sm:text-[120px] font-display font-black tracking-tighter uppercase leading-[0.75] text-white">Advanced <br /> Restoration.</h1>
+            <h1 className="text-6xl sm:text-[120px] font-display tracking-tighter uppercase leading-[0.75] text-white">Advanced <br /> Restoration.</h1>
           </div>
           <p className="text-chrome/50 max-w-sm text-xs font-nav uppercase tracking-widest leading-loose text-right">
             Every procedure is executed within certified tolerance levels. Zero compromise on structural integrity.
@@ -71,8 +71,8 @@ export default function Services() {
                 <div className="text-primary mb-10 transition-transform group-hover:scale-110 duration-500 origin-left">
                   {service.icon}
                 </div>
-                <h3 className="text-4xl font-display font-black mb-6 uppercase tracking-tighter text-white group-hover:text-primary transition-colors leading-none">{service.title}</h3>
-                <p className="text-chrome/70 text-xs font-nav mb-8 max-w-[280px] leading-relaxed uppercase tracking-wide">
+                <h3 className="text-4xl font-display uppercase tracking-tighter text-white group-hover:text-primary transition-colors leading-none">{service.title}</h3>
+                <p className="text-chrome/70 text-sm font-sans font-light mb-8 max-w-[280px] leading-relaxed">
                   {service.desc}
                 </p>
                 <div className="space-y-3">

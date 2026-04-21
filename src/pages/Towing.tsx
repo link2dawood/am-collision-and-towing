@@ -24,12 +24,12 @@ export default function Towing() {
               <span className="w-12 h-[1px] bg-primary"></span>
               Emergency Dispatch / 24.7.365
             </div>
-            <h1 className="text-6xl sm:text-8xl md:text-[160px] font-display font-black tracking-tighter uppercase leading-[0.75] mb-12 text-white">
+            <h1 className="text-6xl sm:text-8xl md:text-[160px] font-display tracking-tighter uppercase leading-[0.75] mb-12 text-white">
               RAPID <br />
               <span className="text-primary italic">RECOVERY.</span> <br />
               NOW.
             </h1>
-            <p className="text-xl text-chrome/70 mb-12 max-w-xl font-light uppercase tracking-tight leading-tight">
+            <p className="text-xl text-chrome/60 mb-12 max-w-xl font-sans font-light leading-relaxed">
               Stuck? Abandoned? Wrecked? Our extreme recovery fleet is moving within 60 seconds of your transmission.
             </p>
             <a 
@@ -58,8 +58,8 @@ export default function Towing() {
                 <div className="text-primary mb-6 transition-transform group-hover:scale-110 duration-500 origin-left">
                   {item.icon}
                 </div>
-                <h3 className="text-3xl font-display font-black mb-3 uppercase tracking-tighter text-white group-hover:text-primary transition-colors">{item.title}</h3>
-                <p className="text-chrome/50 text-xs font-nav italic leading-relaxed uppercase tracking-widest">{item.desc}</p>
+                <h3 className="text-3xl font-display uppercase tracking-tighter text-white group-hover:text-primary transition-colors">{item.title}</h3>
+                <p className="text-chrome/50 text-sm font-sans font-light leading-relaxed">{item.desc}</p>
               </div>
             </div>
           ))}
@@ -72,7 +72,7 @@ export default function Towing() {
           <div className="p-12 sm:p-20 lg:p-24 space-y-12 border-r border-chrome/10">
             <div className="space-y-4">
               <span className="micro-label text-primary">Logistics Range / 05</span>
-              <h2 className="text-6xl md:text-8xl font-display font-black tracking-tighter uppercase leading-[0.8] text-white">GRID <br /><span className="text-primary italic">COVERAGE.</span></h2>
+              <h2 className="text-6xl md:text-8xl font-display tracking-tighter uppercase leading-[0.8] text-white">GRID <br /><span className="text-primary italic">COVERAGE.</span></h2>
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -83,7 +83,7 @@ export default function Towing() {
                 </div>
               ))}
             </div>
-            <p className="text-chrome/40 text-xs font-nav uppercase tracking-[0.2em] leading-relaxed">
+            <p className="text-chrome/50 text-sm font-sans font-light leading-relaxed">
               Extended range recovery available for long-distance transport. Contact dispatch for coordination.
             </p>
           </div>

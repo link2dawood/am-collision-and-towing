@@ -33,7 +33,7 @@ export default function Navbar({ currentPage, setPage }: NavbarProps) {
               <div className="w-6 h-6 flex items-center justify-center font-black text-white italic text-sm">AM</div>
             </div>
             <div>
-              <span className="text-2xl font-display font-black tracking-tighter block leading-none text-white group-hover:text-primary transition-colors">AM COLLISION</span>
+              <span className="text-2xl font-display tracking-tighter block leading-none text-white group-hover:text-primary transition-colors">AM COLLISION</span>
               <span className="micro-label text-primary block mt-1 tracking-[0.4em] opacity-80">& TOWING</span>
             </div>
           </div>
@@ -72,7 +72,7 @@ export default function Navbar({ currentPage, setPage }: NavbarProps) {
       <motion.div
         initial={false}
         animate={isOpen ? { height: 'auto', opacity: 1 } : { height: 0, opacity: 0 }}
-        className="md:hidden overflow-hidden bg-charcoal/95 border-b border-slate-800"
+        className="md:hidden overflow-hidden bg-iron border-b border-chrome/10"
       >
         <div className="px-4 pt-2 pb-6 space-y-1">
           {navItems.map((item) => (
@@ -82,10 +82,10 @@ export default function Navbar({ currentPage, setPage }: NavbarProps) {
                 setPage(item.value);
                 setIsOpen(false);
               }}
-              className={`block w-full text-left px-3 py-3 text-[10px] font-bold uppercase tracking-[0.2em] border-l-2 transition-all ${
+              className={`block w-full text-left px-3 py-4 micro-label border-l-2 transition-all ${
                 currentPage === item.value 
                   ? 'border-primary bg-primary/5 text-primary' 
-                  : 'border-transparent text-slate-400'
+                  : 'border-transparent text-chrome/40'
               }`}
             >
               {item.label}
@@ -93,7 +93,7 @@ export default function Navbar({ currentPage, setPage }: NavbarProps) {
           ))}
           <a 
             href="tel:+15551234567"
-            className="flex items-center justify-center gap-3 w-full bg-primary px-4 py-4 rounded-sm font-black text-charcoal text-xs uppercase tracking-[0.2em] mt-4 shadow-lg shadow-primary/20"
+            className="flex items-center justify-center gap-3 w-full bg-primary px-4 py-4 rounded-none font-nav font-bold text-iron text-xs uppercase tracking-[0.2em] mt-4 shadow-lg shadow-primary/20"
           >
             <Phone className="w-4 h-4" />
             24/7 EMERGENCY DISPATCH

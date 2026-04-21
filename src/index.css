@@ -2,9 +2,8 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Bebas Neue", sans-serif;
-  --font-heading: "Bebas Neue", sans-serif;
+  --font-sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-display: "Bebas Neue", cursive, sans-serif;
   --font-nav: "Rajdhani", sans-serif;
   
   --color-primary: #E8300A; /* Blaze Red */
@@ -19,18 +18,25 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
-    @apply bg-iron text-[#e2e8f0] font-sans antialiased relative;
+    @apply bg-iron text-[#e2e8f0] font-sans font-light relative;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display uppercase tracking-tight;
+    @apply font-display uppercase tracking-tight leading-none;
+    font-weight: 400; /* Bebas Neue is 400 */
   }
 
   p {
-    @apply font-light;
+    @apply font-sans font-light leading-relaxed;
+  }
+
+  button {
+    @apply font-nav uppercase tracking-widest cursor-pointer;
   }
 }
 

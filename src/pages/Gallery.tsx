@@ -27,9 +27,9 @@ export default function Gallery() {
         <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-20 border-b border-chrome/10 pb-10">
           <div className="max-w-3xl">
             <span className="micro-label text-primary mb-4 block">Visual Evidence / 06</span>
-            <h1 className="text-6xl sm:text-[120px] font-display font-black tracking-tighter uppercase leading-[0.75] text-white">The <br /> Operation.</h1>
+            <h1 className="text-6xl sm:text-[120px] font-display tracking-tighter uppercase leading-[0.75] text-white">The <br /> Operation.</h1>
           </div>
-          <p className="text-chrome/50 max-w-sm text-xs font-nav uppercase tracking-widest leading-loose text-right">
+          <p className="text-chrome/60 max-w-sm text-sm font-sans font-light leading-relaxed text-right">
             Every pixel represents a verified restoration. Witness the transition from wreckage to precision.
           </p>
         </div>
@@ -71,7 +71,7 @@ export default function Gallery() {
               />
               <div className="absolute inset-0 bg-iron/80 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8">
                 <span className="micro-label text-primary mb-2">Protocol: {item.type}</span>
-                <h4 className="text-3xl font-display font-black uppercase tracking-tighter leading-none text-white">{item.title}</h4>
+                <h4 className="text-3xl font-display uppercase tracking-tighter leading-none text-white">{item.title}</h4>
               </div>
               <div className="absolute top-4 right-4 micro-label text-white/10 font-nav">0{i+1}</div>
             </motion.div>
@@ -80,8 +80,8 @@ export default function Gallery() {
 
         <div className="mt-32 tech-card p-16 text-center max-w-4xl mx-auto border-t-4 border-primary">
           <span className="micro-label text-primary mb-6 block">Real-time Stream</span>
-          <h3 className="text-5xl md:text-7xl font-display font-black mb-8 uppercase tracking-tighter leading-none text-white">Access the <br />Full Feed.</h3>
-          <p className="text-chrome/60 mb-10 max-w-lg mx-auto text-xs font-nav uppercase tracking-widest leading-loose">
+          <h3 className="text-5xl md:text-7xl font-display mb-8 uppercase tracking-tighter leading-none text-white">Access the <br />Full Feed.</h3>
+          <p className="text-chrome/60 mb-10 max-w-lg mx-auto text-sm font-sans font-light leading-relaxed">
             Follow our high-intensity restorative stream on Instagram for daily operational updates.
           </p>
           <a href="#" className="inline-block bg-primary hover:bg-white text-iron px-12 py-5 font-nav font-bold text-2xl transition-all uppercase tracking-tighter rounded-none">

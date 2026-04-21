@@ -14,11 +14,11 @@ export default function Contact() {
             animate={{ opacity: 1 }}
           >
             <span className="micro-label text-primary mb-6 block">Communication Hub / 09</span>
-            <h1 className="text-6xl sm:text-8xl md:text-[140px] font-display font-black tracking-tighter uppercase mb-12 leading-[0.75] text-white">
+            <h1 className="text-6xl sm:text-8xl md:text-[140px] font-display tracking-tighter uppercase mb-12 leading-[0.75] text-white">
               DIRECT <br />
               <span className="text-primary italic">COMMAND.</span>
             </h1>
-            <p className="text-lg text-chrome/50 mb-16 max-w-xl font-nav uppercase tracking-widest leading-loose">
+            <p className="text-xl text-chrome/60 mb-16 max-w-xl font-sans font-light leading-relaxed">
               Initiate contact for emergency recovery, technical estimates, or operational status updates. Our dispatch is live.
             </p>
 
@@ -94,7 +94,7 @@ export default function Contact() {
               <div className="mb-12">
                  <span className="micro-label text-primary mb-4 block">Form-X / Assessment</span>
                  <h3 className="text-5xl font-display font-black mb-4 uppercase tracking-tighter text-white">Secure Intake</h3>
-                 <p className="text-chrome/50 text-xs font-nav uppercase tracking-widest leading-loose">Transmit your vehicle data for immediate technical assessment by our estimators.</p>
+                 <p className="text-chrome/60 text-sm font-sans font-light leading-relaxed">Transmit your vehicle data for immediate technical assessment by our estimators.</p>
               </div>
               <LeadForm />
             </div>

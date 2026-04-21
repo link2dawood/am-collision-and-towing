@@ -17,7 +17,7 @@ export default function Footer({ setPage }: FooterProps) {
               <div className="bg-primary p-1 rounded-none">
                 <div className="w-5 h-5 flex items-center justify-center font-black text-iron italic text-[10px]">AM</div>
               </div>
-              <span className="text-2xl font-display font-black tracking-tighter uppercase whitespace-nowrap text-white">AM COLLISION</span>
+              <span className="text-2xl font-display tracking-tighter uppercase whitespace-nowrap text-white">AM COLLISION</span>
             </div>
             <p className="micro-label leading-relaxed text-chrome/60">
               TECHNICAL RESTORATION & EMERGENCY RECOVERY SYSTEMS.<br />ESTABLISHED 2009.
