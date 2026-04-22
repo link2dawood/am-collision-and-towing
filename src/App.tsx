@@ -66,7 +66,7 @@ export default function App() {
       {/* Floating CTA for Tows */}
       <div className="fixed bottom-8 right-8 z-40 hidden sm:block">
         <motion.a
-          href="tel:+15551234567"
+          href="tel:+16316764440"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className="flex items-center gap-3 bg-primary hover:bg-primary-dark text-white px-6 py-4 rounded-xl font-bold shadow-2xl shadow-primary/30 group tracking-tight border border-primary/20"

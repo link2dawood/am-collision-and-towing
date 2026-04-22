@@ -9,10 +9,9 @@ export default function Towing() {
         <div className="relative rounded-3xl overflow-hidden min-h-[600px] flex items-center p-8 sm:p-12 md:p-24 shadow-2xl border border-slate-100">
           <div className="absolute inset-0 z-0">
             <img 
-              src="https://images.unsplash.com/photo-1578134492170-4f33d1337583?auto=format&fit=crop&q=80&w=2000" 
+              src="/truck02.jpg" 
               alt="Towing Truck" 
               className="w-full h-full object-cover transition-transform duration-1000"
-              referrerPolicy="no-referrer"
             />
             <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-[2px]"></div>
           </div>
@@ -30,11 +29,11 @@ export default function Towing() {
               Stranded? Our emergency recovery fleet is strategically stationed to reach you within minutes. Professional, safe, and secure transport for any vehicle.
             </p>
             <a 
-              href="tel:+15551234567"
+              href="tel:+16316764440"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-4 bg-primary hover:bg-primary-dark text-white px-12 py-6 rounded-2xl font-bold text-2xl shadow-xl shadow-primary/30 transition-all active:scale-95"
             >
               <Phone className="w-8 h-8" />
-              (555) 123-4567
+              +1 631-676-4440
             </a>
           </div>
         </div>

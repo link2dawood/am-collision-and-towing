@@ -60,11 +60,11 @@ export default function Footer({ setPage }: FooterProps) {
             <div className="space-y-6">
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-primary shrink-0" />
-                <span className="text-sm font-medium">123 Auto Row,<br />Cityville, ST 12345</span>
+                <span className="text-sm font-medium">830 S 1, Ronkonkoma,<br />NY 11779, United States</span>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-primary shrink-0" />
-                <a href="tel:+15551234567" className="text-xl font-bold text-white hover:text-primary transition-colors">(555) 123-4567</a>
+                <a href="tel:+16316764440" className="text-xl font-bold text-white hover:text-primary transition-colors">+1 631-676-4440</a>
               </div>
             </div>
           </div>
