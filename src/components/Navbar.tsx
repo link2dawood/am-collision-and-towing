@@ -52,10 +52,10 @@ export default function Navbar({ currentPage, setPage }: NavbarProps) {
               </button>
             ))}
             <a 
-              href="tel:+15551234567"
+              href="tel:+16316764440"
               className="flex items-center gap-2 bg-primary hover:bg-primary-dark px-5 py-2.5 rounded-lg font-bold text-sm text-white transition-all shadow-md shadow-primary/20"
             >
-              (555) 123-4567
+              +1 631-676-4440
             </a>
           </div>
 
@@ -92,7 +92,7 @@ export default function Navbar({ currentPage, setPage }: NavbarProps) {
             </button>
           ))}
           <a 
-            href="tel:+15551234567"
+            href="tel:+16316764440"
             className="flex items-center justify-center gap-3 w-full bg-primary px-4 py-4 rounded-none font-nav font-bold text-iron text-xs uppercase tracking-[0.2em] mt-4 shadow-lg shadow-primary/20"
           >
             <Phone className="w-4 h-4" />
