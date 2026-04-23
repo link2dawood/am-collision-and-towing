@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'motion/react';
 import { CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 
@@ -20,6 +19,7 @@ type LeadFormData = z.infer<typeof leadSchema>;
 export default function LeadForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const {
     register,
@@ -36,15 +36,25 @@ export default function LeadForm() {
   const onSubmit = async (data: LeadFormData) => {
     setIsSubmitting(true);
     setSubmitStatus('idle');
+    setErrorMessage(null);
     try {
-      await addDoc(collection(db, 'leads'), {
-        ...data,
-        createdAt: serverTimestamp(),
-      });
+      const { error } = await supabase.from('leads').insert([
+        {
+          name: data.name,
+          email: data.email || null,
+          phone: data.phone,
+          service: data.serviceType,
+          message: data.message || null,
+        }
+      ]);
+
+      if (error) throw error;
+
       setSubmitStatus('success');
       reset();
-    } catch (error) {
-      console.error('Error submitting form:', error);
+    } catch (err: any) {
+      console.error('Error submitting form:', err);
+      setErrorMessage(err.message || "Failed to submit request.");
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -78,6 +88,13 @@ export default function LeadForm() {
             animate={{ opacity: 1 }}
             className="space-y-6"
           >
+            {submitStatus === 'error' && (
+              <div className="bg-red-500/10 border border-red-500/50 text-red-500 px-4 py-3 rounded-xl text-sm flex items-start gap-2">
+                <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                <p>{errorMessage}</p>
+              </div>
+            )}
+            
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
               <input

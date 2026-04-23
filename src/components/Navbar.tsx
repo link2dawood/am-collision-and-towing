@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { Phone, Menu, X, Car } from 'lucide-react';
 import { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import { Page } from '../types';
 
 interface NavbarProps {
@@ -10,6 +11,7 @@ interface NavbarProps {
 
 export default function Navbar({ currentPage, setPage }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, profile } = useAuth();
 
   const navItems: { label: string; value: Page }[] = [
     { label: 'Home', value: 'home' },
@@ -51,12 +53,21 @@ export default function Navbar({ currentPage, setPage }: NavbarProps) {
                 {item.label}
               </button>
             ))}
-            <a 
-              href="tel:+16316764440"
-              className="flex items-center gap-2 bg-primary hover:bg-primary-dark px-5 py-2.5 rounded-lg font-bold text-sm text-white transition-all shadow-md shadow-primary/20"
-            >
-              +1 631-676-4440
-            </a>
+            {user ? (
+              <button 
+                onClick={() => setPage(profile?.role === 'admin' ? 'admin' : 'profile')}
+                className="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 px-5 py-2.5 rounded-lg font-bold text-sm text-white transition-all"
+              >
+                {profile?.role === 'admin' ? 'Dashboard' : 'My Account'}
+              </button>
+            ) : (
+              <button 
+                onClick={() => setPage('login')}
+                className="flex items-center gap-2 bg-primary hover:bg-primary-dark px-5 py-2.5 rounded-lg font-bold text-sm text-white transition-all shadow-md shadow-primary/20"
+              >
+                Sign In / Sign Up
+              </button>
+            )}
           </div>
 
           {/* Mobile Toggle */}
