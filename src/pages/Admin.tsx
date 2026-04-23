@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
@@ -40,6 +41,14 @@ export default function Admin({ setPage }: AdminProps) {
   }, [user, profile, authLoading, setPage]);
 
   const fetchLeads = useCallback(async () => {
+  // Fetch leads
+  useEffect(() => {
+    if (user && profile?.role === 'admin') {
+      fetchLeads();
+    }
+  }, [user, profile]);
+
+  const fetchLeads = async () => {
     setLoading(true);
     const { data, error } = await supabase
       .from('leads')
@@ -60,6 +69,7 @@ export default function Admin({ setPage }: AdminProps) {
       fetchLeads();
     }
   }, [user, profile, fetchLeads]);
+  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();

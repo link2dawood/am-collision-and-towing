@@ -18,3 +18,7 @@ metadata.json
 # Test/debug scripts
 test-insert.js
 test-supabase.js
+
+db_pswrd.txt
+test-insert.js
+test-supabase.js
