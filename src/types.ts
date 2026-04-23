@@ -7,4 +7,4 @@ export interface Lead {
   createdAt: any; // ServerValue.timestamp() or Date
 }
 
-export type Page = 'home' | 'services' | 'gallery' | 'towing' | 'about' | 'contact';
+export type Page = 'home' | 'services' | 'gallery' | 'towing' | 'about' | 'contact' | 'login' | 'admin' | 'signup' | 'profile';

@@ -72,7 +72,9 @@ export default function Footer({ setPage }: FooterProps) {
 
         <div className="pt-12 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex flex-col md:flex-row items-center gap-8 text-xs font-bold text-slate-500 uppercase tracking-widest">
-            <span>© {new Date().getFullYear()} AM Collision & Towing</span>
+            <span>
+              <button onClick={() => setPage('login')} className="cursor-default hover:text-primary transition-colors">©</button> {new Date().getFullYear()} AM Collision & Towing
+            </span>
             <span className="hidden md:block w-1 h-1 bg-slate-700 rounded-full"></span>
             <span>I-CAR Gold Class Certified</span>
           </div>
