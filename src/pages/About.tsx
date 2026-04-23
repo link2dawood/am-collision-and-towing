@@ -30,7 +30,7 @@ export default function About() {
           <div className="relative">
             <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border border-slate-100 group">
               <img 
-                src="https://images.unsplash.com/photo-1530046339160-ce3e545b7a0c?auto=format&fit=crop&q=80&w=1200" 
+                src="/fff.webp" 
                 alt="Our Professional Facility" 
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
                 referrerPolicy="no-referrer"
