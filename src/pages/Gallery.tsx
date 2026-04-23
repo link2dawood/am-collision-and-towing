@@ -5,19 +5,19 @@ import { Instagram, ArrowRight } from 'lucide-react';
 const galleryItems = [
   { id: 1, type: 'before', url: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&q=80&w=800', title: 'Rear End Impact' },
   { id: 2, type: 'after', url: 'https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?auto=format&fit=crop&q=80&w=800', title: 'Structural Restoration' },
-  { id: 3, type: 'process', url: 'https://images.unsplash.com/photo-1590400541360-3af4b0ef06b0?auto=format&fit=crop&q=80&w=800', title: 'Frame Precision Work' },
-  { id: 4, type: 'finish', url: 'https://images.unsplash.com/photo-1594970544557-00a6888c99f8?auto=format&fit=crop&q=80&w=800', title: 'Luxury Refinishing' },
-  { id: 5, type: 'before', url: 'https://images.unsplash.com/photo-1598370162598-be90203f56bc?auto=format&fit=crop&q=80&w=800', title: 'Front Collision Damage' },
+  { id: 3, type: 'process', url: '/bikeframe.webp', title: 'Frame Precision Work' },
+  { id: 4, type: 'finish', url: '/luxery.jpg', title: 'Luxury Refinishing' },
+  { id: 5, type: 'before', url: '/front.jpg', title: 'Front Collision Damage' },
   { id: 6, type: 'after', url: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=800', title: 'Factory-Grade Restore' },
-  { id: 7, type: 'process', url: 'https://images.unsplash.com/photo-1503376780353-7e66a876a170?auto=format&fit=crop&q=80&w=800', title: 'Certified Painting' },
-  { id: 8, type: 'finish', url: 'https://images.unsplash.com/photo-1507136566006-2c5e5265b6f3?auto=format&fit=crop&q=80&w=800', title: 'Gloss Verification' },
+  { id: 7, type: 'process', url: '/paint.jpg', title: 'Certified Painting' },
+  { id: 8, type: 'finish', url: '/gloss.jpg', title: 'Gloss Verification' },
 ];
 
 export default function Gallery() {
   const [filter, setFilter] = useState<'all' | 'before' | 'after' | 'process'>('all');
 
-  const filteredItems = filter === 'all' 
-    ? galleryItems 
+  const filteredItems = filter === 'all'
+    ? galleryItems
     : galleryItems.filter(item => item.type === filter || (filter === 'after' && item.type === 'finish'));
 
   return (
@@ -43,11 +43,10 @@ export default function Gallery() {
             <button
               key={f}
               onClick={() => setFilter(f as any)}
-              className={`px-6 py-2.5 rounded-full font-bold text-sm tracking-widest uppercase transition-all border duration-300 ${
-                filter === f 
-                  ? 'bg-primary text-white border-primary shadow-lg shadow-primary/30' 
-                  : 'bg-white text-slate-500 hover:text-slate-900 border-slate-200 hover:border-slate-400'
-              }`}
+              className={`px-6 py-2.5 rounded-full font-bold text-sm tracking-widest uppercase transition-all border duration-300 ${filter === f
+                ? 'bg-primary text-white border-primary shadow-lg shadow-primary/30'
+                : 'bg-white text-slate-500 hover:text-slate-900 border-slate-200 hover:border-slate-400'
+                }`}
             >
               {f}
             </button>
@@ -65,9 +64,9 @@ export default function Gallery() {
               transition={{ duration: 0.4 }}
               className="relative aspect-square overflow-hidden group rounded-2xl shadow-sm border border-slate-100"
             >
-              <img 
-                src={item.url} 
-                alt={item.title} 
+              <img
+                src={item.url}
+                alt={item.title}
                 className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
                 referrerPolicy="no-referrer"
               />
@@ -82,21 +81,21 @@ export default function Gallery() {
         {/* Social Feed Banner */}
         <div className="mt-32 bg-slate-900 rounded-3xl p-12 lg:p-20 text-center relative overflow-hidden">
           <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/10 rounded-full blur-[120px] translate-x-1/2"></div>
-          
+
           <div className="relative z-10 max-w-2xl mx-auto">
             <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-primary mb-8 mx-auto">
-               <Instagram className="w-8 h-8" />
+              <Instagram className="w-8 h-8" />
             </div>
             <h3 className="text-3xl md:text-5xl font-bold mb-8 text-white leading-tight">Follow Our Daily <br />Restoration Journey.</h3>
             <p className="text-slate-400 mb-12 text-lg font-medium leading-relaxed">
               Stay connected with our workshop. We post daily behind-the-scenes content and recently finished projects on our official social channels.
             </p>
-            <a 
-               href="#" 
-               className="inline-flex items-center gap-3 bg-white hover:bg-slate-100 text-slate-900 px-10 py-5 rounded-2xl font-bold text-lg transition-all shadow-xl"
+            <a
+              href="#"
+              className="inline-flex items-center gap-3 bg-white hover:bg-slate-100 text-slate-900 px-10 py-5 rounded-2xl font-bold text-lg transition-all shadow-xl"
             >
-               <span>@AMCollision</span>
-               <ArrowRight className="w-5 h-5 text-primary" />
+              <span>@AMCollision</span>
+              <ArrowRight className="w-5 h-5 text-primary" />
             </a>
           </div>
         </div>
