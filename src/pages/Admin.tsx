@@ -26,50 +26,46 @@ export default function Admin({ setPage }: AdminProps) {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Protect route with RBAC
   useEffect(() => {
     if (!authLoading) {
       if (!user) {
         setPage('login');
       } else if (!profile || profile.role !== 'admin') {
-        // Block non-admin users or users whose profile failed to load
-        alert("Unauthorized. You need admin privileges to view this page.");
+        alert('Unauthorized. You need admin privileges to view this page.');
         setPage('home');
       }
     }
   }, [user, profile, authLoading, setPage]);
 
- const fetchLeads = async () => {
-  setLoading(true);
+  const fetchLeads = async () => {
+    setLoading(true);
 
-  const { data, error } = await supabase
-    .from('leads')
-    .select('*')
-    .order('created_at', { ascending: false });
+    const { data, error } = await supabase
+      .from('leads')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-  if (error) {
-    console.error('Error fetching leads:', error);
-  } else {
-    setLeads(data || []);
-  }
+    if (error) {
+      console.error('Error fetching leads:', error);
+    } else {
+      setLeads(data || []);
+    }
 
-  setLoading(false);
-};
+    setLoading(false);
+  };
 
-useEffect(() => {
-  if (user && profile?.role === 'admin') {
-    fetchLeads();
-  }
-}, [user, profile]);
-
-   
+  useEffect(() => {
+    if (user && profile?.role === 'admin') {
+      fetchLeads();
+    }
+  }, [user, profile]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setPage('login');
   };
 
-  const filteredLeads = leads.filter(lead => 
+  const filteredLeads = leads.filter((lead) =>
     lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     lead.phone.includes(searchTerm) ||
     lead.service.toLowerCase().includes(searchTerm.toLowerCase())
@@ -85,7 +81,6 @@ useEffect(() => {
 
   return (
     <div className="min-h-screen pt-32 pb-20 px-4 max-w-7xl mx-auto">
-      {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20">
@@ -96,7 +91,7 @@ useEffect(() => {
             <p className="text-slate-400 text-sm">Manage your leads and requests</p>
           </div>
         </div>
-        
+
         <button
           onClick={handleLogout}
           className="flex items-center gap-2 px-4 py-2 bg-[#2a3142] hover:bg-red-500/10 text-slate-300 hover:text-red-400 rounded-lg border border-[#3a4152] hover:border-red-500/20 transition-all"
@@ -106,13 +101,10 @@ useEffect(() => {
         </button>
       </div>
 
-      {/* Stats/Controls */}
       <div className="bg-[#1a1f2e] border border-[#2a3142] rounded-2xl p-6 mb-8 flex flex-col md:flex-row gap-6 justify-between items-center shadow-xl">
-        <div className="flex items-center gap-4 w-full md:w-auto">
-          <div className="bg-[#111520] px-6 py-3 rounded-xl border border-[#2a3142]">
-            <p className="text-sm text-slate-400 mb-1">Total Leads</p>
-            <p className="text-2xl font-bold text-white">{leads.length}</p>
-          </div>
+        <div className="bg-[#111520] px-6 py-3 rounded-xl border border-[#2a3142]">
+          <p className="text-sm text-slate-400 mb-1">Total Leads</p>
+          <p className="text-2xl font-bold text-white">{leads.length}</p>
         </div>
 
         <div className="relative w-full md:w-72">
@@ -127,7 +119,6 @@ useEffect(() => {
         </div>
       </div>
 
-      {/* Leads Table */}
       <div className="bg-[#1a1f2e] border border-[#2a3142] rounded-2xl shadow-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
@@ -156,11 +147,11 @@ useEffect(() => {
                 </tr>
               ) : (
                 filteredLeads.map((lead, i) => (
-                  <motion.tr 
+                  <motion.tr
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
-                    key={lead.id} 
+                    key={lead.id}
                     className="hover:bg-[#202636] transition-colors group"
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -172,8 +163,14 @@ useEffect(() => {
                     <td className="px-6 py-4">
                       <div className="font-semibold text-white mb-1">{lead.name}</div>
                       <div className="flex flex-col gap-1 text-xs text-slate-400">
-                        <div className="flex items-center gap-1.5"><Phone className="w-3 h-3" /> {lead.phone}</div>
-                        {lead.email && <div className="flex items-center gap-1.5"><Mail className="w-3 h-3" /> {lead.email}</div>}
+                        <div className="flex items-center gap-1.5">
+                          <Phone className="w-3 h-3" /> {lead.phone}
+                        </div>
+                        {lead.email && (
+                          <div className="flex items-center gap-1.5">
+                            <Mail className="w-3 h-3" /> {lead.email}
+                          </div>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -182,11 +179,13 @@ useEffect(() => {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider
-                        ${lead.status === 'new' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 
-                          lead.status === 'contacted' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : 
-                          'bg-slate-500/10 text-slate-400 border border-slate-500/20'}`}
-                      >
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
+                        lead.status === 'new'
+                          ? 'bg-green-500/10 text-green-400 border border-green-500/20'
+                          : lead.status === 'contacted'
+                            ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                            : 'bg-slate-500/10 text-slate-400 border border-slate-500/20'
+                      }`}>
                         {lead.status}
                       </span>
                     </td>
