@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../lib/firebase';
 import { motion, AnimatePresence } from 'motion/react';
 import { CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 
@@ -33,14 +31,17 @@ export default function LeadForm() {
     }
   });
 
-  const onSubmit = async (data: LeadFormData) => {
+ const onSubmit = async (data: LeadFormData) => {
     setIsSubmitting(true);
     setSubmitStatus('idle');
     try {
-      await addDoc(collection(db, 'leads'), {
-        ...data,
-        createdAt: serverTimestamp(),
-      });
+      // TODO: Wire up Supabase here
+      // For now, just show success without saving to database
+      console.log('Form submitted:', data);
+      
+      // Simulate a brief delay like a real submission
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       setSubmitStatus('success');
       reset();
     } catch (error) {
@@ -50,7 +51,6 @@ export default function LeadForm() {
       setIsSubmitting(false);
     }
   };
-
   return (
     <div className="w-full">
       <AnimatePresence mode="wait">
