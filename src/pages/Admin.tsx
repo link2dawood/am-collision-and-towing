@@ -1,4 +1,3 @@
-import { useCallback, useEffect, useState } from 'react';
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { supabase } from '../lib/supabase';
@@ -40,36 +39,30 @@ export default function Admin({ setPage }: AdminProps) {
     }
   }, [user, profile, authLoading, setPage]);
 
-  const fetchLeads = useCallback(async () => {
-  // Fetch leads
-  useEffect(() => {
-    if (user && profile?.role === 'admin') {
-      fetchLeads();
-    }
-  }, [user, profile]);
+ const fetchLeads = async () => {
+  setLoading(true);
 
-  const fetchLeads = async () => {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('leads')
-      .select('*')
-      .order('created_at', { ascending: false });
+  const { data, error } = await supabase
+    .from('leads')
+    .select('*')
+    .order('created_at', { ascending: false });
 
-    if (error) {
-      console.error('Error fetching leads:', error);
-    } else {
-      setLeads(data || []);
-    }
-    setLoading(false);
-  }, []);
+  if (error) {
+    console.error('Error fetching leads:', error);
+  } else {
+    setLeads(data || []);
+  }
 
-  // Fetch leads
-  useEffect(() => {
-    if (user && profile?.role === 'admin') {
-      fetchLeads();
-    }
-  }, [user, profile, fetchLeads]);
-  };
+  setLoading(false);
+};
+
+useEffect(() => {
+  if (user && profile?.role === 'admin') {
+    fetchLeads();
+  }
+}, [user, profile]);
+
+   
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
