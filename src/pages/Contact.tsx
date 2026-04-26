@@ -71,8 +71,19 @@ export default function Contact() {
                 </div>
                 <div>
                   <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Email Us</h4>
-                  <p className="text-lg font-bold text-slate-900 leading-none mb-1">info@amcollisiontowing.com</p>
+                  <p className="text-lg font-bold text-slate-900 leading-none mb-1">amcollisionandtowing@gmail.com</p>
                   <p className="text-slate-500 text-sm font-medium">We reply as soon as possible</p>
+                </div>
+              </div>
+
+              {/* Fax */}
+              <div className="flex items-start gap-6 group">
+                <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-primary shrink-0 group-hover:scale-110 transition-transform">
+                  <Phone className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Fax</h4>
+                  <p className="text-2xl font-bold text-primary tracking-tight leading-none mb-2">+1 631-676-4443</p>
                 </div>
               </div>
 
@@ -83,8 +94,8 @@ export default function Contact() {
                 </div>
                 <div>
                   <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Our Location</h4>
-                  <p className="text-lg font-bold text-slate-900 leading-none mb-1">830 S 1, Ronkonkoma,</p>
-                  <p className="text-slate-500 text-sm font-medium">NY 11779, United States</p>
+                  <p className="text-lg font-bold text-slate-900 leading-none mb-1">500 Johnson Ave, Bohemia,</p>
+                  <p className="text-slate-500 text-sm font-medium">New York 11716</p>
                   <p className="text-slate-400 text-xs font-medium mt-1 uppercase">Conveniently located for you</p>
                 </div>
               </div>
@@ -122,7 +133,7 @@ export default function Contact() {
                 </div>
               </div>
               <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white shadow-sm">
-                 <p className="text-[9px] font-bold text-slate-900 uppercase tracking-wider">830 S 1, Ronkonkoma, NY 11779</p>
+                 <p className="text-[9px] font-bold text-slate-900 uppercase tracking-wider">500 Johnson Ave, Bohemia, NY 11716</p>
               </div>
             </div>
           </motion.div>

@@ -7,3 +7,14 @@ coverage/
 .env*
 !.env.example
 firebase-applet-config.json
+
+# Sensitive / local files
+db_pswrd.txt
+*.txt
+security_spec.md
+firebase-blueprint.json
+metadata.json
+
+# Test/debug scripts
+test-insert.js
+test-supabase.js

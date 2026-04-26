@@ -60,7 +60,7 @@ export default function Footer({ setPage }: FooterProps) {
             <div className="space-y-6">
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-primary shrink-0" />
-                <span className="text-sm font-medium">830 S 1, Ronkonkoma,<br />NY 11779, United States</span>
+                <span className="text-sm font-medium">500 Johnson Ave, Bohemia,<br />New York 11716</span>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-primary shrink-0" />
