@@ -2,7 +2,7 @@ import { useState, FormEvent } from 'react';
 import { motion } from 'motion/react';
 import { supabase } from '../lib/supabase';
 import { Page } from '../types';
-import { Mail, Lock, Loader2, ArrowLeft, User, Phone } from 'lucide-react';
+import { Mail, Lock, Loader2, ArrowLeft, User, Phone, CheckCircle2 } from 'lucide-react';
 
 interface SignupProps {
   setPage: (page: Page) => void;
@@ -13,16 +13,16 @@ export default function Signup({ setPage }: SignupProps) {
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [emailSent, setEmailSent] = useState(false);
 
   const handleSignup = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    // 1. Create the user in Auth and pass metadata
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
@@ -41,11 +41,47 @@ export default function Signup({ setPage }: SignupProps) {
     }
 
     if (authData.user) {
-      // Successfully registered! 
-      // The Supabase trigger will automatically create the profile row using the metadata
-      setPage('home');
+      if (authData.session) {
+        // Email confirmation is disabled — user is immediately logged in
+        setLoading(false);
+        setPage('profile');
+      } else {
+        // Email confirmation is required
+        setLoading(false);
+        setEmailSent(true);
+      }
     }
   };
+
+  if (emailSent) {
+    return (
+      <div className="min-h-screen pt-32 pb-20 px-4 flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-md bg-[#1a1f2e] border border-[#2a3142] p-10 rounded-2xl shadow-2xl text-center"
+        >
+          <div className="w-16 h-16 bg-green-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5 border border-green-500/20">
+            <CheckCircle2 className="w-8 h-8 text-green-400" />
+          </div>
+          <h2 className="text-2xl font-bold text-white mb-3">Check your email</h2>
+          <p className="text-slate-400 mb-2">
+            We sent a confirmation link to
+          </p>
+          <p className="text-primary font-semibold mb-6">{email}</p>
+          <p className="text-slate-500 text-sm mb-8">
+            Click the link in that email to activate your account. You can close this page.
+          </p>
+          <button
+            onClick={() => setPage('login')}
+            className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 rounded-xl transition-all"
+          >
+            Back to Sign In
+          </button>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pt-32 pb-20 px-4 flex items-center justify-center relative">
