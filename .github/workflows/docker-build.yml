@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Deployment Workflow
 
 on:
   push:
@@ -11,12 +11,22 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-and-push:
+  # JOB 1: CHECKOUT & SETUP
+  setup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+  # JOB 2: BUILD DOCKER IMAGE
+  build:
+    needs: setup
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -51,3 +61,12 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  # JOB 3: NOTIFY SUCCESS (Optional)
+  notify:
+    needs: build
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - name: ✅ Build Complete
+        run: echo "Docker image built and pushed successfully!"
