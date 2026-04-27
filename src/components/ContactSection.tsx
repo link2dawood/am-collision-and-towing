@@ -81,7 +81,11 @@ export default function ContactSection() {
 
             {/* Email */}
             <motion.a
+<<<<<<< HEAD
               href="mailto:info@amcollisiontowing.com"
+=======
+              href="mailto:amcollisionandtowing@gmail.com"
+>>>>>>> c2d716bbeae20dd71e931afb93dbb4a324c1595f
               whileHover={{ x: 10 }}
               className="flex gap-4 items-start group cursor-pointer"
             >
@@ -90,11 +94,32 @@ export default function ContactSection() {
               </div>
               <div>
                 <h4 className="font-semibold text-slate-900 text-lg">Email</h4>
+<<<<<<< HEAD
                 <p className="text-slate-600">info@amcollisiontowing.com</p>
+=======
+                <p className="text-slate-600">amcollisionandtowing@gmail.com</p>
+>>>>>>> c2d716bbeae20dd71e931afb93dbb4a324c1595f
                 <p className="text-sm text-slate-500">We'll respond within 24 hours</p>
               </div>
             </motion.a>
 
+<<<<<<< HEAD
+=======
+            {/* Fax */}
+            <motion.div
+              whileHover={{ x: 10 }}
+              className="flex gap-4 items-start group"
+            >
+              <div className="p-3 rounded-lg bg-red-100 group-hover:bg-red-600 transition-colors shrink-0">
+                <Phone className="w-6 h-6 text-red-600 group-hover:text-white transition-colors" />
+              </div>
+              <div>
+                <h4 className="font-semibold text-slate-900 text-lg">Fax</h4>
+                <p className="text-slate-600">+1 631-676-4443</p>
+              </div>
+            </motion.div>
+
+>>>>>>> c2d716bbeae20dd71e931afb93dbb4a324c1595f
             {/* Address */}
             <motion.div
               whileHover={{ x: 10 }}
@@ -105,8 +130,13 @@ export default function ContactSection() {
               </div>
               <div>
                 <h4 className="font-semibold text-slate-900 text-lg">Location</h4>
+<<<<<<< HEAD
                 <p className="text-slate-600">830 S 1, Ronkonkoma,</p>
                 <p className="text-slate-600">NY 11779, United States</p>
+=======
+                <p className="text-slate-600">500 Johnson Ave, Bohemia,</p>
+                <p className="text-slate-600">New York 11716</p>
+>>>>>>> c2d716bbeae20dd71e931afb93dbb4a324c1595f
                 <p className="text-sm text-slate-500">Easily visible from main roads</p>
               </div>
             </motion.div>
@@ -254,7 +284,11 @@ export default function ContactSection() {
         >
           <iframe
             title="AM Collision & Towing Location"
+<<<<<<< HEAD
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3024.1234567890!2d-74.0!3d40.7!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDDCsDQyJzAxLjUiTiA3NMOkMDAnNTkuNyJX!5e0!3m2!1sen!2sus!4v1234567890"
+=======
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3024!2d-73.1!3d40.77!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89e83a2a1e1e1e1e%3A0x0!2s500+Johnson+Ave%2C+Bohemia%2C+NY+11716!5e0!3m2!1sen!2sus!4v1234567890"
+>>>>>>> c2d716bbeae20dd71e931afb93dbb4a324c1595f
             width="100%"
             height="100%"
             style={{ border: 0 }}

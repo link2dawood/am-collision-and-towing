@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { useEffect, useState } from 'react';
+=======
+import { useCallback, useEffect, useState } from 'react';
+>>>>>>> c2d716bbeae20dd71e931afb93dbb4a324c1595f
 import { motion } from 'motion/react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
@@ -39,6 +43,7 @@ export default function Admin({ setPage }: AdminProps) {
     }
   }, [user, profile, authLoading, setPage]);
 
+<<<<<<< HEAD
   // Fetch leads
   useEffect(() => {
     if (user && profile?.role === 'admin') {
@@ -47,6 +52,9 @@ export default function Admin({ setPage }: AdminProps) {
   }, [user, profile]);
 
   const fetchLeads = async () => {
+=======
+  const fetchLeads = useCallback(async () => {
+>>>>>>> c2d716bbeae20dd71e931afb93dbb4a324c1595f
     setLoading(true);
     const { data, error } = await supabase
       .from('leads')
@@ -59,7 +67,18 @@ export default function Admin({ setPage }: AdminProps) {
       setLeads(data || []);
     }
     setLoading(false);
+<<<<<<< HEAD
   };
+=======
+  }, []);
+
+  // Fetch leads
+  useEffect(() => {
+    if (user && profile?.role === 'admin') {
+      fetchLeads();
+    }
+  }, [user, profile, fetchLeads]);
+>>>>>>> c2d716bbeae20dd71e931afb93dbb4a324c1595f
 
   const handleLogout = async () => {
     await supabase.auth.signOut();

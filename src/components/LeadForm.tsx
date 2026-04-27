@@ -33,7 +33,7 @@ export default function LeadForm() {
     }
   });
 
-  const onSubmit = async (data: LeadFormData) => {
+ const onSubmit = async (data: LeadFormData) => {
     setIsSubmitting(true);
     setSubmitStatus('idle');
     setErrorMessage(null);
@@ -60,7 +60,6 @@ export default function LeadForm() {
       setIsSubmitting(false);
     }
   };
-
   return (
     <div className="w-full">
       <AnimatePresence mode="wait">
