@@ -10,7 +10,7 @@ interface ProfileProps {
 }
 
 export default function Profile({ setPage }: ProfileProps) {
-  const { user, profile, loading: authLoading } = useAuth();
+  const { user, profile, loading: authLoading, refreshProfile } = useAuth();
   
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
@@ -52,13 +52,9 @@ export default function Profile({ setPage }: ProfileProps) {
     if (updateError) {
       setError("Failed to update profile: " + updateError.message);
     } else {
+      await refreshProfile();
       setSuccess(true);
-      // Wait a moment before clearing success message
       setTimeout(() => setSuccess(false), 3000);
-      
-      // Update local context manually or trigger a session refresh
-      // Since context listens to auth state, we might need a manual refresh,
-      // but for UX, the inputs are already updated.
     }
     
     setLoading(false);

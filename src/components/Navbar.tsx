@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Phone, Menu, X, Car } from 'lucide-react';
+import { Phone, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Page } from '../types';
@@ -94,15 +94,36 @@ export default function Navbar({ currentPage, setPage }: NavbarProps) {
                 setIsOpen(false);
               }}
               className={`block w-full text-left px-3 py-4 micro-label border-l-2 transition-all ${
-                currentPage === item.value 
-                  ? 'border-primary bg-primary/5 text-primary' 
+                currentPage === item.value
+                  ? 'border-primary bg-primary/5 text-primary'
                   : 'border-transparent text-chrome/40'
               }`}
             >
               {item.label}
             </button>
           ))}
-          <a 
+          {user ? (
+            <button
+              onClick={() => {
+                setPage(profile?.role === 'admin' ? 'admin' : 'profile');
+                setIsOpen(false);
+              }}
+              className="block w-full text-left px-3 py-4 micro-label border-l-2 border-transparent text-chrome/40 transition-all"
+            >
+              {profile?.role === 'admin' ? 'Dashboard' : 'My Account'}
+            </button>
+          ) : (
+            <button
+              onClick={() => {
+                setPage('login');
+                setIsOpen(false);
+              }}
+              className="block w-full text-left px-3 py-4 micro-label border-l-2 border-transparent text-chrome/40 transition-all"
+            >
+              Sign In / Sign Up
+            </button>
+          )}
+          <a
             href="tel:+16316764440"
             className="flex items-center justify-center gap-3 w-full bg-primary px-4 py-4 rounded-none font-nav font-bold text-iron text-xs uppercase tracking-[0.2em] mt-4 shadow-lg shadow-primary/20"
           >
