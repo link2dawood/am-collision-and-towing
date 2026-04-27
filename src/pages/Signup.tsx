@@ -41,9 +41,9 @@ export default function Signup({ setPage }: SignupProps) {
     }
 
     if (authData.user) {
-      // Successfully registered! 
+      // Successfully registered!
       // The Supabase trigger will automatically create the profile row using the metadata
-      setPage('home');
+      setPage('profile');
     }
   };
 

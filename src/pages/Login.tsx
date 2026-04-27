@@ -19,18 +19,45 @@ export default function Login({ setPage }: LoginProps) {
     setLoading(true);
     setError(null);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { data, error: authError } = await supabase.auth.signInWithPassword({ email, password });
 
-    if (error) {
-      setError(error.message);
+    if (authError) {
+      setError(authError.message);
       setLoading(false);
-    } else {
-      // Successfully logged in
-      setPage('admin');
+      return;
     }
+
+    if (data.user) {
+      // Fetch profile role to route correctly
+      let { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .single();
+
+      // If no profile row exists yet, create one
+      if (!profile) {
+        const { data: newProfile } = await supabase
+          .from('profiles')
+          .insert({
+            id: data.user.id,
+            full_name: data.user.user_metadata?.full_name || null,
+            phone: data.user.user_metadata?.phone || null,
+            role: 'user',
+          })
+          .select('role')
+          .single();
+        profile = newProfile;
+      }
+
+      if (profile?.role === 'admin') {
+        setPage('admin');
+      } else {
+        setPage('profile');
+      }
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -57,11 +84,11 @@ export default function Login({ setPage }: LoginProps) {
           <div className="w-16 h-16 bg-[#2a3142] rounded-2xl flex items-center justify-center mx-auto mb-4 border border-[#3a4152]">
             <Lock className="w-8 h-8 text-primary" />
           </div>
-          <h2 className="text-3xl font-bold text-white mb-2">Admin Access</h2>
-          <p className="text-slate-400">Log in to view leads and manage content.</p>
+          <h2 className="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+          <p className="text-slate-400">Sign in to your AM Collision account.</p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-6 relative z-10">
+        <form onSubmit={handleLogin} className="space-y-5 relative z-10">
           {error && (
             <div className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded-xl text-sm text-center">
               {error}
@@ -80,7 +107,7 @@ export default function Login({ setPage }: LoginProps) {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full bg-[#111520] border border-[#2a3142] text-white rounded-xl pl-11 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all placeholder:text-slate-600"
-                placeholder="admin@example.com"
+                placeholder="you@example.com"
               />
             </div>
           </div>
@@ -105,15 +132,11 @@ export default function Login({ setPage }: LoginProps) {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
           >
-            {loading ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-              'Sign In'
-            )}
+            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Sign In'}
           </button>
-          
+
           <div className="text-center mt-6">
             <p className="text-sm text-slate-400">
               Don't have an account?{' '}

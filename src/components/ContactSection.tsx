@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { motion } from 'motion/react';
+import { supabase } from '../lib/supabase';
+
 export default function ContactSection() {
   const [formData, setFormData] = useState({
     name: '',
@@ -9,27 +11,36 @@ export default function ContactSection() {
     service: '',
     message: ''
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log('Form submitted:', formData);
-    // Reset form
-    setFormData({
-      name: '',
-      phone: '',
-      email: '',
-      service: '',
-      message: ''
+    setSubmitting(true);
+    setSubmitStatus('idle');
+
+    const { error } = await supabase.from('leads').insert({
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email || null,
+      service: formData.service,
+      message: formData.message || null,
+      status: 'new',
     });
+
+    if (error) {
+      console.error('Lead submit error:', error);
+      setSubmitStatus('error');
+    } else {
+      setSubmitStatus('success');
+      setFormData({ name: '', phone: '', email: '', service: '', message: '' });
+    }
+    setSubmitting(false);
   };
 
   return (
@@ -81,11 +92,7 @@ export default function ContactSection() {
 
             {/* Email */}
             <motion.a
-<<<<<<< HEAD
-              href="mailto:info@amcollisiontowing.com"
-=======
               href="mailto:amcollisionandtowing@gmail.com"
->>>>>>> c2d716bbeae20dd71e931afb93dbb4a324c1595f
               whileHover={{ x: 10 }}
               className="flex gap-4 items-start group cursor-pointer"
             >
@@ -94,17 +101,11 @@ export default function ContactSection() {
               </div>
               <div>
                 <h4 className="font-semibold text-slate-900 text-lg">Email</h4>
-<<<<<<< HEAD
-                <p className="text-slate-600">info@amcollisiontowing.com</p>
-=======
                 <p className="text-slate-600">amcollisionandtowing@gmail.com</p>
->>>>>>> c2d716bbeae20dd71e931afb93dbb4a324c1595f
                 <p className="text-sm text-slate-500">We'll respond within 24 hours</p>
               </div>
             </motion.a>
 
-<<<<<<< HEAD
-=======
             {/* Fax */}
             <motion.div
               whileHover={{ x: 10 }}
@@ -119,7 +120,6 @@ export default function ContactSection() {
               </div>
             </motion.div>
 
->>>>>>> c2d716bbeae20dd71e931afb93dbb4a324c1595f
             {/* Address */}
             <motion.div
               whileHover={{ x: 10 }}
@@ -130,13 +130,8 @@ export default function ContactSection() {
               </div>
               <div>
                 <h4 className="font-semibold text-slate-900 text-lg">Location</h4>
-<<<<<<< HEAD
-                <p className="text-slate-600">830 S 1, Ronkonkoma,</p>
-                <p className="text-slate-600">NY 11779, United States</p>
-=======
                 <p className="text-slate-600">500 Johnson Ave, Bohemia,</p>
                 <p className="text-slate-600">New York 11716</p>
->>>>>>> c2d716bbeae20dd71e931afb93dbb4a324c1595f
                 <p className="text-sm text-slate-500">Easily visible from main roads</p>
               </div>
             </motion.div>
@@ -258,19 +253,38 @@ export default function ContactSection() {
               />
             </div>
 
+            {/* Success / Error messages */}
+            {submitStatus === 'success' && (
+              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm text-center font-medium">
+                ✅ Message sent! We'll get back to you within 24 hours.
+              </div>
+            )}
+            {submitStatus === 'error' && (
+              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm text-center">
+                ❌ Something went wrong. Please call us directly at +1 631-676-4440.
+              </div>
+            )}
+
             {/* Submit Button */}
             <motion.button
               type="submit"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="w-full px-8 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-all"
+              disabled={submitting}
+              whileHover={{ scale: submitting ? 1 : 1.02 }}
+              whileTap={{ scale: submitting ? 1 : 0.98 }}
+              className="w-full px-8 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              Send Message
+              {submitting ? (
+                <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Sending...</>
+              ) : (
+                'Send Message'
+              )}
             </motion.button>
 
-            <p className="text-sm text-slate-500 text-center">
-              We'll get back to you within 24 hours
-            </p>
+            {submitStatus === 'idle' && (
+              <p className="text-sm text-slate-500 text-center">
+                We'll get back to you within 24 hours
+              </p>
+            )}
           </motion.form>
         </div>
 
@@ -284,11 +298,7 @@ export default function ContactSection() {
         >
           <iframe
             title="AM Collision & Towing Location"
-<<<<<<< HEAD
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3024.1234567890!2d-74.0!3d40.7!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDDCsDQyJzAxLjUiTiA3NMOkMDAnNTkuNyJX!5e0!3m2!1sen!2sus!4v1234567890"
-=======
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3024!2d-73.1!3d40.77!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89e83a2a1e1e1e1e%3A0x0!2s500+Johnson+Ave%2C+Bohemia%2C+NY+11716!5e0!3m2!1sen!2sus!4v1234567890"
->>>>>>> c2d716bbeae20dd71e931afb93dbb4a324c1595f
             width="100%"
             height="100%"
             style={{ border: 0 }}
