@@ -30,20 +30,21 @@ jobs:
       - name: Lint (ESLint + TypeScript)
         run: npm run lint
 
+      - name: Create .env file
+        run: echo "${{ secrets.ENV }}" > .env.local
+
       - name: Build
         run: npm run build
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
-      - name: Add SSH key
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.HETZNER_SSH_KEY }}
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy dist to Hetzner via rsync
         run: |
           rsync -rzvh --delete \
-            -e "ssh -o StrictHostKeyChecking=no" \
             dist/ \
-            ${{ secrets.HETZNER_USER }}@${{ secrets.HETZNER_HOST }}:/var/www/am-collision/
+            ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/am-collision/
