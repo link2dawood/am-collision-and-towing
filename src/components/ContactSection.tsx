@@ -8,7 +8,7 @@ export default function ContactSection() {
     name: '',
     phone: '',
     email: '',
-    service: '',
+    service_type: '',
     message: ''
   });
   const [submitting, setSubmitting] = useState(false);
@@ -38,7 +38,7 @@ export default function ContactSection() {
       setSubmitStatus('error');
     } else {
       setSubmitStatus('success');
-      setFormData({ name: '', phone: '', email: '', service: '', message: '' });
+      setFormData({ name: '', phone: '', email: '', service_type: '', message: '' });
     }
     setSubmitting(false);
   };
@@ -217,13 +217,13 @@ export default function ContactSection() {
 
             {/* Service */}
             <div>
-              <label htmlFor="service" className="block text-sm font-semibold text-slate-900 mb-2">
+              <label htmlFor="service_type" className="block text-sm font-semibold text-slate-900 mb-2">
                 Service Needed
               </label>
               <select
-                id="service"
-                name="service"
-                value={formData.service}
+                id="service_type"
+                name="service_type"
+                value={formData.service_type}
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-red-600 focus:outline-none transition-colors"
