@@ -95,7 +95,6 @@ export default function Admin({ setPage }: AdminProps) {
   const [quotes,   setQuotes]   = useState<Quote[]>([]);
   const [users,    setUsers]    = useState<UserProfile[]>([]);
   const [gallery,  setGallery]  = useState<GalleryImage[]>([]);
-  const [settings, setSettings] = useState<SiteSettings>(DEFAULTS);
   const [settingsDraft, setSettingsDraft] = useState<SiteSettings>(DEFAULTS);
 
   // ── loading states ────────────────────────────────────────
@@ -172,7 +171,6 @@ export default function Admin({ setPage }: AdminProps) {
       const map: Record<string, unknown> = {};
       data.forEach(row => { map[row.key] = row.value; });
       const merged = { ...DEFAULTS, ...map } as SiteSettings;
-      setSettings(merged);
       setSettingsDraft(merged);
     }
     setSettingsLoading(false);
@@ -289,7 +287,7 @@ export default function Admin({ setPage }: AdminProps) {
     setSettingsSaving(true);
     const rows = Object.entries(settingsDraft).map(([key, value]) => ({ key, value, updated_by: user?.id }));
     const { error } = await supabase.from('site_settings').upsert(rows, { onConflict: 'key' });
-    if (!error) setSettings(settingsDraft);
+    if (error) console.error('Settings save error:', error);
     setSettingsSaving(false);
   };
 
