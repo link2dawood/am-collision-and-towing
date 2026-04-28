@@ -78,7 +78,7 @@ export default function Footer({ setPage }: FooterProps) {
             <span className="hidden md:block w-1 h-1 bg-slate-700 rounded-full"></span>
             <span>I-CAR Gold Class Certified</span>
           </div>
-          <button 
+          <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="text-slate-500 hover:text-white transition-colors flex items-center gap-2 text-xs font-bold uppercase tracking-widest"
           >

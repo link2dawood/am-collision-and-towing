@@ -33,7 +33,7 @@ export default function LeadForm() {
     }
   });
 
- const onSubmit = async (data: LeadFormData) => {
+  const onSubmit = async (data: LeadFormData) => {
     setIsSubmitting(true);
     setSubmitStatus('idle');
     setErrorMessage(null);
@@ -93,7 +93,7 @@ export default function LeadForm() {
                 <p>{errorMessage}</p>
               </div>
             )}
-            
+
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
               <input

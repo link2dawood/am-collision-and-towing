@@ -13,14 +13,14 @@ export default function Contact() {
           <span className="text-primary italic">Direct Response.</span>
         </h1>
         <p className="text-xl text-slate-600 max-w-2xl font-medium leading-relaxed">
-          Contact us for expert collision estimates, service inquiries, or 24/7 emergency recovery. 
+          Contact us for expert collision estimates, service inquiries, or 24/7 emergency recovery.
           We are here to help you get back on the road safely.
         </p>
       </section>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-          
+
           {/* Left Side: Form Card */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -33,14 +33,14 @@ export default function Contact() {
               <div className="h-1.5 w-16 bg-primary rounded-full mb-6"></div>
               <p className="text-slate-500 font-medium">Have a question or need an estimate? Fill out the form below and our team will get back to you immediately.</p>
             </div>
-            
+
             <LeadForm />
-            
+
             <div className="mt-8 flex items-center justify-center gap-4 text-slate-400 text-[11px] font-bold uppercase tracking-widest border-t border-slate-50 pt-8">
-               <div className="flex items-center gap-2">
-                 <ShieldCheck className="w-4 h-4 text-green-500" />
-                 Your information is secure and will never be shared.
-               </div>
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-green-500" />
+                Your information is secure and will never be shared.
+              </div>
             </div>
           </motion.div>
 
@@ -118,9 +118,9 @@ export default function Contact() {
 
             {/* Mini Map */}
             <div className="relative h-[250px] bg-slate-100 rounded-3xl overflow-hidden border border-slate-200 group shadow-lg">
-              <img 
-                src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=1200" 
-                alt="Workshop map location" 
+              <img
+                src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=1200"
+                alt="Workshop map location"
                 className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-80 transition-all duration-1000"
                 referrerPolicy="no-referrer"
               />
@@ -133,7 +133,7 @@ export default function Contact() {
                 </div>
               </div>
               <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white shadow-sm">
-                 <p className="text-[9px] font-bold text-slate-900 uppercase tracking-wider">500 Johnson Ave, Bohemia, NY 11716</p>
+                <p className="text-[9px] font-bold text-slate-900 uppercase tracking-wider">500 Johnson Ave, Bohemia, NY 11716</p>
               </div>
             </div>
           </motion.div>
