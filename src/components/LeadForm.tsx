@@ -43,7 +43,7 @@ export default function LeadForm() {
           name: data.name,
           email: data.email || null,
           phone: data.phone,
-          service: data.serviceType,
+          service_type: data.serviceType,
           message: data.message || null,
         }
       ]);

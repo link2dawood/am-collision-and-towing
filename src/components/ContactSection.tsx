@@ -24,12 +24,12 @@ export default function ContactSection() {
     setSubmitting(true);
     setSubmitStatus('idle');
 
-    const { error } = await supabase.from('leads').insert({
+    const { error } = await supabase.from('contact_submissions').insert({
       name: formData.name,
-      phone: formData.phone,
-      email: formData.email || null,
-      service: formData.service,
-      message: formData.message || null,
+      phone: formData.phone || null,
+      email: formData.email,
+      subject: formData.service || null,
+      message: formData.message,
       status: 'new',
     });
 
