@@ -5,10 +5,12 @@ import {
   quoteUserEmail, quoteAdminEmail,
 } from './templates.ts';
 
-const RESEND_API_KEY   = Deno.env.get('RESEND_API_KEY')!;
-const FROM_EMAIL       = Deno.env.get('FROM_EMAIL') ?? 'noreply@amcollisionandtowing.com';
-const FALLBACK_ADMIN   = Deno.env.get('ADMIN_EMAIL') ?? 'amcollisionandtowing@gmail.com';
-const WEBHOOK_SECRET   = Deno.env.get('WEBHOOK_SECRET');
+const MJ_API_KEY     = Deno.env.get('MAILJET_API_KEY')!;
+const MJ_SECRET_KEY  = Deno.env.get('MAILJET_SECRET_KEY')!;
+const FROM_EMAIL     = Deno.env.get('FROM_EMAIL') ?? 'noreply@amcollisionandtowing.com';
+const FROM_NAME      = 'AM Collision & Towing';
+const FALLBACK_ADMIN = Deno.env.get('ADMIN_EMAIL') ?? 'amcollisionandtowing@gmail.com';
+const WEBHOOK_SECRET = Deno.env.get('WEBHOOK_SECRET');
 
 interface WebhookPayload {
   type: 'INSERT' | 'UPDATE' | 'DELETE';
@@ -41,23 +43,29 @@ async function getAdminSettings(): Promise<NotificationSettings> {
 }
 
 async function sendEmail(to: string, subject: string, html: string): Promise<void> {
-  const res = await fetch('https://api.resend.com/emails', {
+  const credentials = btoa(`${MJ_API_KEY}:${MJ_SECRET_KEY}`);
+
+  const res = await fetch('https://api.mailjet.com/v3.1/send', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${RESEND_API_KEY}`,
+      Authorization: `Basic ${credentials}`,
     },
     body: JSON.stringify({
-      from: `AM Collision & Towing <${FROM_EMAIL}>`,
-      to: [to],
-      subject,
-      html,
+      Messages: [
+        {
+          From:     { Email: FROM_EMAIL, Name: FROM_NAME },
+          To:       [{ Email: to }],
+          Subject:  subject,
+          HTMLPart: html,
+        },
+      ],
     }),
   });
 
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`Resend ${res.status}: ${body}`);
+    throw new Error(`Mailjet ${res.status}: ${body}`);
   }
 }
 
