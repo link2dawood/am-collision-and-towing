@@ -13,6 +13,7 @@ import Admin from "./pages/Admin";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
 import { AuthProvider } from "./contexts/AuthContext";
+import ChatbaseWidget from "./components/ChatbaseWidget";
 import { Page } from "./types";
 
 export default function App() {
@@ -76,6 +77,7 @@ export default function App() {
         </main>
 
         <Footer setPage={setCurrentPage} />
+        <ChatbaseWidget />
 
         {/* Floating CTA for Tows */}
         <div className="fixed bottom-8 right-8 z-40 hidden sm:block">
