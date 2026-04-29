@@ -80,7 +80,7 @@ export default function App() {
         <ChatbaseWidget />
 
         {/* Floating CTA for Tows */}
-        <div className="fixed bottom-8 right-8 z-40 hidden sm:block">
+        <div className="fixed bottom-8 left-8 z-40 hidden sm:block">
           <motion.a
             href="tel:+16316764440"
             whileHover={{ scale: 1.05 }}
