@@ -1,14 +1,20 @@
 import { Phone, ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useSiteSettings } from '../contexts/SiteSettingsContext';
 
 export default function HeroSection() {
+  const { settings } = useSiteSettings();
+  const { phone, site_name, tagline } = settings.general;
+  const heroTagline = settings.branding.hero_tagline || tagline;
+  const telHref = `tel:${phone.replace(/[^\d+]/g, '')}`;
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img 
           src="/truck02.jpg" 
-          alt="AM Collision and Towing Facility" 
+          alt={`${site_name} Facility`}
           className="w-full h-full object-cover"
         />
         {/* Dark overlay with navy/charcoal tones for text readability */}
@@ -34,7 +40,7 @@ export default function HeroSection() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white leading-tight drop-shadow-xl tracking-tight"
             >
-              AM Collision & Towing
+              {site_name}
             </motion.h1>
             
             <motion.p
@@ -43,7 +49,7 @@ export default function HeroSection() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-xl md:text-2xl text-slate-200 max-w-3xl mx-auto leading-relaxed font-light drop-shadow"
             >
-              Trusted Auto Body Repair and Towing with <span className="text-red-500 font-bold drop-shadow-md">40+ Years of Experience</span>
+              {heroTagline}
             </motion.p>
           </div>
 
@@ -55,7 +61,7 @@ export default function HeroSection() {
             className="flex flex-col sm:flex-row gap-5 justify-center pt-6"
           >
             <a
-              href="tel:+16316764440"
+              href={telHref}
               className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-red-600 text-white font-bold text-lg rounded-xl overflow-hidden transition-all transform hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(220,38,38,0.4)] hover:shadow-[0_0_30px_rgba(220,38,38,0.6)]"
             >
                <span className="absolute w-0 h-0 transition-all duration-500 ease-out bg-white rounded-full group-hover:w-56 group-hover:h-56 opacity-10"></span>

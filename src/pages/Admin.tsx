@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState, type ChangeEvent, type ReactN
 import { motion, AnimatePresence } from 'motion/react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import { useSiteSettings } from '../contexts/SiteSettingsContext';
 import { Page } from '../types';
 import {
   LogOut, LayoutDashboard, Loader2, Mail, Phone, Calendar,
@@ -87,6 +88,7 @@ const inp = 'w-full bg-[#111520] border border-[#2a3142] text-white rounded-xl p
 
 export default function Admin({ setPage }: AdminProps) {
   const { user, profile, loading: authLoading } = useAuth();
+  const { reload: reloadSettings } = useSiteSettings();
   const [activeTab, setActiveTab]   = useState<Tab>('overview');
 
   // ── data states ───────────────────────────────────────────
@@ -346,7 +348,14 @@ export default function Admin({ setPage }: AdminProps) {
     setSettingsSaving(true);
     const rows = Object.entries(settingsDraft).map(([key, value]) => ({ key, value, updated_by: user?.id }));
     const { error } = await supabase.from('site_settings').upsert(rows, { onConflict: 'key' });
-    if (error) console.error('Settings save error:', error);
+    if (error) {
+      console.error('Settings save error:', error);
+      alert('Failed to save settings: ' + error.message);
+    } else {
+      // Reload context so all frontend components immediately reflect the new values
+      reloadSettings();
+      alert('✅ Settings saved! The website has been updated.');
+    }
     setSettingsSaving(false);
   };
 

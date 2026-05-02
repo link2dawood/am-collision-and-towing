@@ -1,5 +1,6 @@
 import { motion } from 'motion/react';
 import { Shield, Hammer, Paintbrush, Activity, ClipboardCheck, Wrench } from 'lucide-react';
+import QuoteForm from '../components/QuoteForm';
 
 export default function Services() {
   const services = [
@@ -89,6 +90,36 @@ export default function Services() {
             </motion.div>
           ))}
         </div>
+
+        {/* Lead Capture — Request a Quote */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mt-24 grid grid-cols-1 lg:grid-cols-2 gap-16 items-start bg-slate-50 rounded-3xl p-10 lg:p-16 border border-slate-100"
+        >
+          <div>
+            <span className="text-primary font-bold uppercase tracking-widest text-xs mb-4 block">Free Estimate</span>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 leading-tight mb-6">
+              Ready to get <br /><span className="text-primary">your car fixed?</span>
+            </h2>
+            <p className="text-slate-600 text-lg leading-relaxed font-medium mb-8">
+              Fill out the form and our team will contact you within the hour with a detailed repair estimate. No obligation, no pressure.
+            </p>
+            <ul className="space-y-3">
+              {['Free damage assessment', 'Insurance claim assistance', 'Same-day response', 'No hidden fees'].map(item => (
+                <li key={item} className="flex items-center gap-3 text-slate-700 font-medium">
+                  <ClipboardCheck className="w-5 h-5 text-primary shrink-0" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="bg-white rounded-2xl p-8 shadow-lg border border-slate-100">
+            <QuoteForm />
+          </div>
+        </motion.div>
       </div>
     </div>
   );

@@ -2,8 +2,14 @@ import React, { useState } from 'react';
 import { Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { motion } from 'motion/react';
 import { supabase } from '../lib/supabase';
+import { useSiteSettings } from '../contexts/SiteSettingsContext';
 
 export default function ContactSection() {
+  const { settings } = useSiteSettings();
+  const { phone, email, address, fax } = settings.general;
+  const telHref = `tel:${phone.replace(/[^\d+]/g, '')}`;
+  const mailHref = `mailto:${email}`;
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -28,13 +34,13 @@ export default function ContactSection() {
       name: formData.name,
       phone: formData.phone || null,
       email: formData.email,
-      subject: formData.service || null,
+      subject: formData.service_type || null,   // ✅ fixed: was formData.service (undefined)
       message: formData.message,
       status: 'new',
     });
 
     if (error) {
-      console.error('Lead submit error:', error);
+      console.error('Contact submit error:', error);
       setSubmitStatus('error');
     } else {
       setSubmitStatus('success');
@@ -76,7 +82,7 @@ export default function ContactSection() {
 
             {/* Phone */}
             <motion.a
-              href="tel:+16316764440"
+              href={telHref}
               whileHover={{ x: 10 }}
               className="flex gap-4 items-start group cursor-pointer"
             >
@@ -85,14 +91,14 @@ export default function ContactSection() {
               </div>
               <div>
                 <h4 className="font-semibold text-slate-900 text-lg">Phone</h4>
-                <p className="text-slate-600"> +1 631-676-4440</p>
+                <p className="text-slate-600">{phone}</p>
                 <p className="text-sm text-slate-500">24/7 Emergency Towing Available</p>
               </div>
             </motion.a>
 
             {/* Email */}
             <motion.a
-              href="mailto:amcollisionandtowing@gmail.com"
+              href={mailHref}
               whileHover={{ x: 10 }}
               className="flex gap-4 items-start group cursor-pointer"
             >
@@ -101,24 +107,26 @@ export default function ContactSection() {
               </div>
               <div>
                 <h4 className="font-semibold text-slate-900 text-lg">Email</h4>
-                <p className="text-slate-600">amcollisionandtowing@gmail.com</p>
+                <p className="text-slate-600">{email}</p>
                 <p className="text-sm text-slate-500">We'll respond within 24 hours</p>
               </div>
             </motion.a>
 
             {/* Fax */}
-            <motion.div
-              whileHover={{ x: 10 }}
-              className="flex gap-4 items-start group"
-            >
-              <div className="p-3 rounded-lg bg-red-100 group-hover:bg-red-600 transition-colors shrink-0">
-                <Phone className="w-6 h-6 text-red-600 group-hover:text-white transition-colors" />
-              </div>
-              <div>
-                <h4 className="font-semibold text-slate-900 text-lg">Fax</h4>
-                <p className="text-slate-600">+1 631-676-4443</p>
-              </div>
-            </motion.div>
+            {fax && (
+              <motion.div
+                whileHover={{ x: 10 }}
+                className="flex gap-4 items-start group"
+              >
+                <div className="p-3 rounded-lg bg-red-100 group-hover:bg-red-600 transition-colors shrink-0">
+                  <Phone className="w-6 h-6 text-red-600 group-hover:text-white transition-colors" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-slate-900 text-lg">Fax</h4>
+                  <p className="text-slate-600">{fax}</p>
+                </div>
+              </motion.div>
+            )}
 
             {/* Address */}
             <motion.div
@@ -130,8 +138,7 @@ export default function ContactSection() {
               </div>
               <div>
                 <h4 className="font-semibold text-slate-900 text-lg">Location</h4>
-                <p className="text-slate-600">500 Johnson Ave, Bohemia,</p>
-                <p className="text-slate-600">New York 11716</p>
+                <p className="text-slate-600 whitespace-pre-line">{address}</p>
                 <p className="text-sm text-slate-500">Easily visible from main roads</p>
               </div>
             </motion.div>
@@ -194,7 +201,7 @@ export default function ContactSection() {
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-red-600 focus:outline-none transition-colors"
-                placeholder="+1 631-676-4440"
+                placeholder={phone}
               />
             </div>
 
@@ -261,7 +268,8 @@ export default function ContactSection() {
             )}
             {submitStatus === 'error' && (
               <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm text-center">
-                ❌ Something went wrong. Please call us directly at +1 631-676-4440.
+                ❌ Something went wrong. Please call us directly at{' '}
+                <a href={telHref} className="font-bold underline">{phone}</a>.
               </div>
             )}
 
@@ -288,7 +296,7 @@ export default function ContactSection() {
           </motion.form>
         </div>
 
-        {/* Map Placeholder */}
+        {/* Map */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
