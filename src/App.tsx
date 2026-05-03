@@ -21,9 +21,14 @@ import DietsSupplimentTerms from "./pages/DietsSupplimentTerms";
 import PixelCatchPrivacyPolicy from "./pages/PixelCatchPrivacyPolicy";
 import PixelCatchTerms from "./pages/PixelCatchTerms";
 
+function pathToPage(pathname: string): Page {
+  const normalized = pathname.replace(/\/$/, "") || "/";
+  return URL_TO_PAGE[normalized] ?? "home";
+}
+
 export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>(
-    () => URL_TO_PAGE[window.location.pathname] ?? "home"
+    () => pathToPage(window.location.pathname)
   );
 
   const navigateTo = (page: Page) => {
@@ -35,6 +40,13 @@ export default function App() {
     }
     setCurrentPage(page);
   };
+
+  // Sync state when user hits browser back/forward
+  useEffect(() => {
+    const onPop = () => setCurrentPage(pathToPage(window.location.pathname));
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
 
   // Handle scroll top on page change
   useEffect(() => {
