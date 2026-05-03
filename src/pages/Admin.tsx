@@ -2,12 +2,13 @@ import { useCallback, useEffect, useRef, useState, type ChangeEvent, type ReactN
 import { motion, AnimatePresence } from 'motion/react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import { useSiteSettings } from '../contexts/SiteSettingsContext';
 import { Page } from '../types';
 import {
   LogOut, LayoutDashboard, Loader2, Mail, Phone, Calendar,
   Search, X, MessageSquare, Trash2, RefreshCw, Users, Car,
   TrendingUp, Settings, ImageIcon, Upload, Save, ExternalLink,
-  ToggleLeft, ToggleRight,
+  ToggleLeft, ToggleRight, Tag, Edit2, Check, Plus,
 } from 'lucide-react';
 
 interface AdminProps { setPage: (page: Page) => void; }
@@ -87,6 +88,7 @@ const inp = 'w-full bg-[#111520] border border-[#2a3142] text-white rounded-xl p
 
 export default function Admin({ setPage }: AdminProps) {
   const { user, profile, loading: authLoading } = useAuth();
+  const { reload: reloadSettings } = useSiteSettings();
   const [activeTab, setActiveTab]   = useState<Tab>('overview');
 
   // ── data states ───────────────────────────────────────────
@@ -107,6 +109,10 @@ export default function Admin({ setPage }: AdminProps) {
   const [settingsSaving,  setSettingsSaving]  = useState(false);
   const [uploading,       setUploading]       = useState(false);
   const [deletingId,      setDeletingId]      = useState<string | null>(null);
+  const [editingImg,      setEditingImg]      = useState<GalleryImage | null>(null);
+  const [editDraft,       setEditDraft]       = useState<{ name: string; alt_text: string; tags: string[]; sort_order: number } | null>(null);
+  const [editSaving,      setEditSaving]      = useState(false);
+  const [customTagInput,  setCustomTagInput]  = useState('');
 
   // ── search / selection ────────────────────────────────────
   const [leadSearch,    setLeadSearch]    = useState('');
@@ -252,10 +258,17 @@ export default function Admin({ setPage }: AdminProps) {
     setUploading(true);
     const ext = file.name.split('.').pop() ?? 'jpg';
     const path = `gallery/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+
     const { error: upErr } = await supabase.storage.from('media').upload(path, file, { cacheControl: '31536000' });
-    if (upErr) { console.error('Upload error:', upErr); setUploading(false); return; }
+    if (upErr) {
+      console.error('Storage upload error:', upErr);
+      alert(`Upload failed: ${upErr.message}\n\nMake sure the "media" storage bucket exists in Supabase and that RLS policies allow admin uploads. Run supabase_gallery_fix.sql in the Supabase SQL Editor.`);
+      setUploading(false);
+      return;
+    }
+
     const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(path);
-    await supabase.from('media_gallery').insert({
+    const { error: dbErr } = await supabase.from('media_gallery').insert({
       name: file.name.replace(/\.[^.]+$/, ''),
       url: publicUrl,
       storage_path: path,
@@ -263,6 +276,11 @@ export default function Admin({ setPage }: AdminProps) {
       size_bytes: file.size,
       uploaded_by: user?.id,
     });
+    if (dbErr) {
+      console.error('DB insert error:', dbErr);
+      alert(`Image uploaded to storage but failed to save metadata: ${dbErr.message}\n\nRun supabase_gallery_fix.sql to create the media_gallery table.`);
+    }
+
     await fetchGallery();
     setUploading(false);
   };
@@ -273,7 +291,50 @@ export default function Admin({ setPage }: AdminProps) {
     await supabase.storage.from('media').remove([img.storage_path]);
     await supabase.from('media_gallery').delete().eq('id', img.id);
     setGallery(p => p.filter(g => g.id !== img.id));
+    if (editingImg?.id === img.id) { setEditingImg(null); setEditDraft(null); }
     setDeletingId(null);
+  };
+
+  const openEditPanel = (img: GalleryImage) => {
+    setEditingImg(img);
+    setEditDraft({ name: img.name, alt_text: img.alt_text ?? '', tags: img.tags ?? [], sort_order: img.sort_order ?? 0 });
+    setCustomTagInput('');
+  };
+
+  const toggleTag = (tag: string) => {
+    if (!editDraft) return;
+    setEditDraft(d => d ? ({
+      ...d,
+      tags: d.tags.includes(tag) ? d.tags.filter(t => t !== tag) : [...d.tags, tag],
+    }) : d);
+  };
+
+  const addCustomTag = () => {
+    const t = customTagInput.trim().toLowerCase();
+    if (!t || !editDraft || editDraft.tags.includes(t)) { setCustomTagInput(''); return; }
+    setEditDraft(d => d ? { ...d, tags: [...d.tags, t] } : d);
+    setCustomTagInput('');
+  };
+
+  const saveImageEdit = async () => {
+    if (!editingImg || !editDraft) return;
+    setEditSaving(true);
+    const { error } = await supabase.from('media_gallery').update({
+      name:       editDraft.name,
+      alt_text:   editDraft.alt_text || null,
+      tags:       editDraft.tags,
+      sort_order: editDraft.sort_order,
+    }).eq('id', editingImg.id);
+    if (!error) {
+      setGallery(p => p.map(g => g.id === editingImg.id
+        ? { ...g, ...editDraft, alt_text: editDraft.alt_text || null }
+        : g
+      ));
+      setEditingImg(prev => prev ? { ...prev, ...editDraft, alt_text: editDraft.alt_text || null } : prev);
+    } else {
+      alert('Save failed: ' + error.message);
+    }
+    setEditSaving(false);
   };
 
   const handleFileInput = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -287,7 +348,14 @@ export default function Admin({ setPage }: AdminProps) {
     setSettingsSaving(true);
     const rows = Object.entries(settingsDraft).map(([key, value]) => ({ key, value, updated_by: user?.id }));
     const { error } = await supabase.from('site_settings').upsert(rows, { onConflict: 'key' });
-    if (error) console.error('Settings save error:', error);
+    if (error) {
+      console.error('Settings save error:', error);
+      alert('Failed to save settings: ' + error.message);
+    } else {
+      // Reload context so all frontend components immediately reflect the new values
+      reloadSettings();
+      alert('✅ Settings saved! The website has been updated.');
+    }
     setSettingsSaving(false);
   };
 
@@ -693,10 +761,12 @@ export default function Admin({ setPage }: AdminProps) {
         {activeTab === 'gallery' && (
           <motion.div key="gallery" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
             <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFileInput} />
+
+            {/* Toolbar */}
             <div className="bg-[#1a1f2e] border border-[#2a3142] rounded-2xl p-4 mb-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
               <div>
                 <p className="text-white font-semibold">{gallery.length} image{gallery.length !== 1 ? 's' : ''}</p>
-                <p className="text-slate-500 text-xs mt-0.5">Stored in Supabase Storage — "media" bucket</p>
+                <p className="text-slate-500 text-xs mt-0.5">Click any image to edit its tags, title &amp; sort order</p>
               </div>
               <button
                 onClick={() => fileInputRef.current?.click()}
@@ -707,40 +777,205 @@ export default function Admin({ setPage }: AdminProps) {
               </button>
             </div>
 
-            {galleryLoading ? (
-              <div className="py-24 text-center"><Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-3" /><p className="text-slate-400">Loading gallery…</p></div>
-            ) : gallery.length === 0 ? (
-              <div className="bg-[#1a1f2e] border-2 border-dashed border-[#2a3142] rounded-2xl py-24 text-center">
-                <ImageIcon className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-                <p className="text-slate-400 font-medium mb-2">No images yet</p>
-                <p className="text-slate-600 text-sm mb-6">Upload images to build your gallery</p>
-                <button onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-xl mx-auto transition-all hover:bg-primary-dark">
-                  <Upload className="w-4 h-4" /> Upload your first image
-                </button>
+            {/* Main area: grid + side panel */}
+            <div className="flex gap-5 items-start">
+
+              {/* Grid */}
+              <div className="flex-1 min-w-0">
+                {galleryLoading ? (
+                  <div className="py-24 text-center"><Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-3" /><p className="text-slate-400">Loading gallery…</p></div>
+                ) : gallery.length === 0 ? (
+                  <div className="bg-[#1a1f2e] border-2 border-dashed border-[#2a3142] rounded-2xl py-24 text-center">
+                    <ImageIcon className="w-12 h-12 text-slate-600 mx-auto mb-4" />
+                    <p className="text-slate-400 font-medium mb-2">No images yet</p>
+                    <p className="text-slate-600 text-sm mb-6">Upload images to build your gallery</p>
+                    <button onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-xl mx-auto transition-all hover:bg-primary-dark">
+                      <Upload className="w-4 h-4" /> Upload your first image
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                    {gallery.map((img, i) => (
+                      <motion.div
+                        key={img.id}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: i * 0.04 }}
+                        onClick={() => openEditPanel(img)}
+                        className={`group relative bg-[#1a1f2e] rounded-xl overflow-hidden border-2 aspect-square cursor-pointer transition-all ${
+                          editingImg?.id === img.id ? 'border-primary shadow-lg shadow-primary/20' : 'border-[#2a3142] hover:border-primary/50'
+                        }`}
+                      >
+                        <img src={img.url} alt={img.alt_text || img.name} className="w-full h-full object-cover" loading="lazy" />
+
+                        {/* Tags badge */}
+                        {img.tags && img.tags.length > 0 && (
+                          <div className="absolute top-2 left-2 flex flex-wrap gap-1">
+                            {img.tags.slice(0, 2).map(t => (
+                              <span key={t} className="px-1.5 py-0.5 bg-primary/90 text-white text-[9px] font-bold uppercase rounded">{t}</span>
+                            ))}
+                            {img.tags.length > 2 && <span className="px-1.5 py-0.5 bg-black/60 text-white text-[9px] font-bold rounded">+{img.tags.length - 2}</span>}
+                          </div>
+                        )}
+
+                        {/* Hover overlay */}
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2">
+                          <Edit2 className="w-5 h-5 text-white" />
+                          <p className="text-white text-xs font-semibold text-center line-clamp-2">{img.alt_text || img.name}</p>
+                          <div className="flex gap-2 mt-1" onClick={e => e.stopPropagation()}>
+                            <a href={img.url} target="_blank" rel="noopener noreferrer"
+                              className="p-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors">
+                              <ExternalLink className="w-3.5 h-3.5" />
+                            </a>
+                            <button onClick={() => deleteGalleryImage(img)} disabled={deletingId === img.id}
+                              className="p-1.5 bg-red-500/20 hover:bg-red-500/40 rounded-lg text-red-400 transition-colors">
+                              {deletingId === img.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Selected tick */}
+                        {editingImg?.id === img.id && (
+                          <div className="absolute top-2 right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                            <Check className="w-3 h-3 text-white" />
+                          </div>
+                        )}
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
               </div>
-            ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {gallery.map((img, i) => (
-                  <motion.div key={img.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.04 }}
-                    className="group relative bg-[#1a1f2e] rounded-xl overflow-hidden border border-[#2a3142] aspect-square">
-                    <img src={img.url} alt={img.alt_text || img.name} className="w-full h-full object-cover" loading="lazy" />
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2">
-                      <p className="text-white text-xs font-semibold text-center truncate w-full">{img.name}</p>
-                      <div className="flex gap-2">
-                        <a href={img.url} target="_blank" rel="noopener noreferrer"
-                          className="p-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors">
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </a>
-                        <button onClick={() => deleteGalleryImage(img)} disabled={deletingId === img.id}
-                          className="p-1.5 bg-red-500/20 hover:bg-red-500/40 rounded-lg text-red-400 transition-colors">
-                          {deletingId === img.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
-                        </button>
+
+              {/* Edit Panel */}
+              <AnimatePresence>
+                {editingImg && editDraft && (
+                  <motion.div
+                    key="edit-panel"
+                    initial={{ opacity: 0, x: 24 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 24 }}
+                    className="w-72 shrink-0 bg-[#1a1f2e] border border-[#2a3142] rounded-2xl overflow-hidden"
+                  >
+                    {/* Panel header */}
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-[#2a3142]">
+                      <div className="flex items-center gap-2">
+                        <Tag className="w-4 h-4 text-primary" />
+                        <span className="text-sm font-bold text-white">Edit Image</span>
                       </div>
+                      <button onClick={() => { setEditingImg(null); setEditDraft(null); }}
+                        className="p-1 text-slate-500 hover:text-white transition-colors rounded-lg hover:bg-[#2a3142]">
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    {/* Thumbnail */}
+                    <div className="relative aspect-video bg-[#111520]">
+                      <img src={editingImg.url} alt={editDraft.alt_text || editDraft.name} className="w-full h-full object-cover" />
+                    </div>
+
+                    <div className="p-4 space-y-4">
+
+                      {/* Name */}
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">Image Title</label>
+                        <input
+                          value={editDraft.name}
+                          onChange={e => setEditDraft(d => d ? { ...d, name: e.target.value } : d)}
+                          className="w-full bg-[#111520] border border-[#2a3142] text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary transition-colors"
+                          placeholder="e.g. Front Bumper Repair"
+                        />
+                      </div>
+
+                      {/* Alt Text */}
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">Caption / Alt Text</label>
+                        <input
+                          value={editDraft.alt_text}
+                          onChange={e => setEditDraft(d => d ? { ...d, alt_text: e.target.value } : d)}
+                          className="w-full bg-[#111520] border border-[#2a3142] text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary transition-colors"
+                          placeholder="Shown on hover in gallery"
+                        />
+                      </div>
+
+                      {/* Preset Tags */}
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">Filter Tags</label>
+                        <div className="flex flex-wrap gap-2">
+                          {['before', 'after', 'process', 'finish', 'towing', 'paint'].map(tag => (
+                            <button
+                              key={tag}
+                              onClick={() => toggleTag(tag)}
+                              className={`px-3 py-1 rounded-full text-xs font-bold uppercase border transition-all ${
+                                editDraft.tags.includes(tag)
+                                  ? 'bg-primary text-white border-primary'
+                                  : 'bg-[#111520] text-slate-400 border-[#2a3142] hover:border-primary/50 hover:text-white'
+                              }`}
+                            >
+                              {editDraft.tags.includes(tag) && <span className="mr-1">✓</span>}{tag}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Custom Tag */}
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">Custom Tag</label>
+                        <div className="flex gap-2">
+                          <input
+                            value={customTagInput}
+                            onChange={e => setCustomTagInput(e.target.value)}
+                            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCustomTag(); } }}
+                            className="flex-1 bg-[#111520] border border-[#2a3142] text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary transition-colors"
+                            placeholder="e.g. luxury"
+                          />
+                          <button onClick={addCustomTag}
+                            className="px-3 py-2 bg-[#2a3142] hover:bg-primary text-slate-300 hover:text-white rounded-lg transition-colors">
+                            <Plus className="w-4 h-4" />
+                          </button>
+                        </div>
+                        {/* Current tags */}
+                        {editDraft.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 mt-2">
+                            {editDraft.tags.map(t => (
+                              <span key={t}
+                                className="flex items-center gap-1 px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 text-xs rounded-full font-medium">
+                                {t}
+                                <button onClick={() => setEditDraft(d => d ? { ...d, tags: d.tags.filter(x => x !== t) } : d)}
+                                  className="hover:text-white transition-colors">
+                                  <X className="w-3 h-3" />
+                                </button>
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Sort Order */}
+                      <div>
+                        <label className="block text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1.5">Sort Order</label>
+                        <input
+                          type="number"
+                          value={editDraft.sort_order}
+                          onChange={e => setEditDraft(d => d ? { ...d, sort_order: Number(e.target.value) } : d)}
+                          className="w-full bg-[#111520] border border-[#2a3142] text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary transition-colors"
+                        />
+                        <p className="text-slate-600 text-[10px] mt-1">Lower number = shown first</p>
+                      </div>
+
+                      {/* Save */}
+                      <button
+                        onClick={saveImageEdit}
+                        disabled={editSaving}
+                        className="w-full flex items-center justify-center gap-2 py-2.5 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-all disabled:opacity-60 text-sm"
+                      >
+                        {editSaving ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving…</> : <><Save className="w-4 h-4" /> Save Changes</>}
+                      </button>
+
                     </div>
                   </motion.div>
-                ))}
-              </div>
-            )}
+                )}
+              </AnimatePresence>
+            </div>
           </motion.div>
         )}
 

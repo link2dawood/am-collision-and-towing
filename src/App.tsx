@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -12,12 +12,29 @@ import Login from "./pages/Login";
 import Admin from "./pages/Admin";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
-import { AuthProvider } from "./contexts/AuthContext";
 import ChatbaseWidget from "./components/ChatbaseWidget";
-import { Page } from "./types";
+import { AuthProvider } from "./contexts/AuthContext";
+import { SiteSettingsProvider, useSiteSettings } from "./contexts/SiteSettingsContext";
+import { Page, URL_TO_PAGE, PAGE_TO_URL } from "./types";
+import DietsSupplimentPrivacyPolicy from "./pages/DietsSupplimentPrivacyPolicy";
+import DietsSupplimentTerms from "./pages/DietsSupplimentTerms";
+import PixelCatchPrivacyPolicy from "./pages/PixelCatchPrivacyPolicy";
+import PixelCatchTerms from "./pages/PixelCatchTerms";
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<Page>("home");
+  const [currentPage, setCurrentPage] = useState<Page>(
+    () => URL_TO_PAGE[window.location.pathname] ?? "home"
+  );
+
+  const navigateTo = (page: Page) => {
+    const url = PAGE_TO_URL[page];
+    if (url) {
+      history.pushState(null, "", url);
+    } else if (PAGE_TO_URL[currentPage]) {
+      history.pushState(null, "", "/");
+    }
+    setCurrentPage(page);
+  };
 
   // Handle scroll top on page change
   useEffect(() => {
@@ -31,7 +48,7 @@ export default function App() {
   const renderPage = () => {
     switch (currentPage) {
       case "home":
-        return <Home setPage={setCurrentPage} />;
+        return <Home setPage={navigateTo} />;
       case "services":
         return <Services />;
       case "towing":
@@ -43,58 +60,85 @@ export default function App() {
       case "contact":
         return <Contact />;
       case "login":
-        return <Login setPage={setCurrentPage} />;
+        return <Login setPage={navigateTo} />;
       case "signup":
-        return <Signup setPage={setCurrentPage} />;
+        return <Signup setPage={navigateTo} />;
       case "profile":
-        return <Profile setPage={setCurrentPage} />;
+        return <Profile setPage={navigateTo} />;
       case "admin":
-        return <Admin setPage={setCurrentPage} />;
+        return <Admin setPage={navigateTo} />;
+      case "apps-dietssuppliment-privacy":
+        return <DietsSupplimentPrivacyPolicy />;
+      case "apps-dietssuppliment-terms":
+        return <DietsSupplimentTerms />;
+      case "extensions-pixelcatch-privacy":
+        return <PixelCatchPrivacyPolicy />;
+      case "extensions-pixelcatch-terms":
+        return <PixelCatchTerms />;
       default:
-        return <Home setPage={setCurrentPage} />;
+        return <Home setPage={navigateTo} />;
     }
   };
 
   return (
-    <AuthProvider>
-      <div className="min-h-screen bg-iron text-[#e2e8f0] selection:bg-primary selection:text-white relative overflow-x-hidden">
-        <div className="fixed inset-0 blueprint-grid opacity-20 pointer-events-none z-0"></div>
+    <SiteSettingsProvider>
+      <AuthProvider>
+        <AppShell currentPage={currentPage} setCurrentPage={navigateTo} renderPage={renderPage} />
+      </AuthProvider>
+    </SiteSettingsProvider>
+  );
+}
 
-        <Navbar currentPage={currentPage} setPage={setCurrentPage} />
+// Inner shell that can consume SiteSettingsContext
+function AppShell({
+  currentPage,
+  setCurrentPage,
+  renderPage,
+}: {
+  currentPage: Page;
+  setCurrentPage: (p: Page) => void;
+  renderPage: () => React.ReactNode;
+}) {
+  const { settings } = useSiteSettings();
 
-        <main className="relative z-10">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentPage}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-            >
-              {renderPage()}
-            </motion.div>
-          </AnimatePresence>
-        </main>
+  return (
+    <div className="min-h-screen bg-iron text-[#e2e8f0] selection:bg-primary selection:text-white relative overflow-x-hidden">
+      <div className="fixed inset-0 blueprint-grid opacity-20 pointer-events-none z-0"></div>
 
-        <Footer setPage={setCurrentPage} />
-        <ChatbaseWidget />
+      <Navbar currentPage={currentPage} setPage={setCurrentPage} />
 
-        {/* Floating CTA for Tows */}
-        <div className="fixed bottom-8 left-8 z-40 hidden sm:block">
-          <motion.a
-            href="tel:+16316764440"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-3 bg-primary hover:bg-primary-dark text-white px-6 py-4 rounded-xl font-bold shadow-2xl shadow-primary/30 group tracking-tight border border-primary/20"
+      <main className="relative z-10">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentPage}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
           >
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
-            </span>
-            24/7 EMERGENCY TOW
-          </motion.a>
-        </div>
+            {renderPage()}
+          </motion.div>
+        </AnimatePresence>
+      </main>
+
+      <Footer setPage={setCurrentPage} />
+      <ChatbaseWidget />
+
+      {/* Floating CTA for Tows */}
+      <div className="fixed bottom-8 left-8 z-40 hidden sm:block">
+        <motion.a
+          href={`tel:${settings.general.phone.replace(/[^\d+]/g, '')}`}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="flex items-center gap-3 bg-primary hover:bg-primary-dark text-white px-6 py-4 rounded-xl font-bold shadow-2xl shadow-primary/30 group tracking-tight border border-primary/20"
+        >
+          <span className="relative flex h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+          </span>
+          24/7 EMERGENCY TOW
+        </motion.a>
       </div>
-    </AuthProvider>
+    </div>
   );
 }

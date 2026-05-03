@@ -1,12 +1,19 @@
-import { Instagram, Facebook, Phone, MapPin, Clock, Mail, Activity } from 'lucide-react';
+import { Instagram, Facebook, Phone, MapPin } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Page } from '../types';
+import { useSiteSettings } from '../contexts/SiteSettingsContext';
 
 interface FooterProps {
   setPage: (page: Page) => void;
 }
 
 export default function Footer({ setPage }: FooterProps) {
+  const { settings } = useSiteSettings();
+  const { phone, email, address, site_name } = settings.general;
+  const { facebook, instagram } = settings.social;
+  const telHref = `tel:${phone.replace(/[^\d+]/g, '')}`;
+  const mailHref = `mailto:${email}`;
+
   return (
     <footer className="bg-slate-900 pt-24 pb-12 relative z-10 text-slate-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -23,12 +30,26 @@ export default function Footer({ setPage }: FooterProps) {
               Professional auto body restoration and emergency recovery experts. Serving our community with integrity since 2009.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary hover:text-white transition-all">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary hover:text-white transition-all">
-                <Instagram className="w-5 h-5" />
-              </a>
+              {facebook ? (
+                <a href={facebook} target="_blank" rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary hover:text-white transition-all">
+                  <Facebook className="w-5 h-5" />
+                </a>
+              ) : (
+                <span className="w-10 h-10 rounded-full bg-slate-800/50 flex items-center justify-center text-slate-600 cursor-not-allowed">
+                  <Facebook className="w-5 h-5" />
+                </span>
+              )}
+              {instagram ? (
+                <a href={instagram} target="_blank" rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary hover:text-white transition-all">
+                  <Instagram className="w-5 h-5" />
+                </a>
+              ) : (
+                <span className="w-10 h-10 rounded-full bg-slate-800/50 flex items-center justify-center text-slate-600 cursor-not-allowed">
+                  <Instagram className="w-5 h-5" />
+                </span>
+              )}
             </div>
           </div>
 
@@ -59,12 +80,12 @@ export default function Footer({ setPage }: FooterProps) {
             <h4 className="text-white font-bold text-sm uppercase tracking-widest">Contact Dispatch</h4>
             <div className="space-y-6">
               <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-primary shrink-0" />
-                <span className="text-sm font-medium">500 Johnson Ave, Bohemia,<br />New York 11716</span>
+                <MapPin className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                <span className="text-sm font-medium">{address}</span>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-primary shrink-0" />
-                <a href="tel:+16316764440" className="text-xl font-bold text-white hover:text-primary transition-colors">+1 631-676-4440</a>
+                <a href={telHref} className="text-xl font-bold text-white hover:text-primary transition-colors">{phone}</a>
               </div>
             </div>
           </div>
@@ -73,7 +94,7 @@ export default function Footer({ setPage }: FooterProps) {
         <div className="pt-12 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex flex-col md:flex-row items-center gap-8 text-xs font-bold text-slate-500 uppercase tracking-widest">
             <span>
-              <button onClick={() => setPage('login')} className="cursor-default hover:text-primary transition-colors">©</button> {new Date().getFullYear()} AM Collision & Towing
+              <button onClick={() => setPage('login')} className="cursor-default hover:text-primary transition-colors">©</button> {new Date().getFullYear()} {site_name}
             </span>
             <span className="hidden md:block w-1 h-1 bg-slate-700 rounded-full"></span>
             <span>I-CAR Gold Class Certified</span>

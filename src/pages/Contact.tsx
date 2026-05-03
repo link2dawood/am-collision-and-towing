@@ -1,12 +1,18 @@
 import { motion } from 'motion/react';
-import { Phone, MapPin, Mail, Clock, ShieldCheck, ArrowRight, CheckCircle2, Award, Truck, Heart } from 'lucide-react';
-import LeadForm from '../components/LeadForm';
+import { Phone, MapPin, Mail, Clock, ShieldCheck, Award, Truck, Heart } from 'lucide-react';
+import ContactForm from '../components/ContactForm';
+import { useSiteSettings } from '../contexts/SiteSettingsContext';
 
 export default function Contact() {
+  const { settings } = useSiteSettings();
+  const { phone, email, fax, address } = settings.general;
+  const telHref = `tel:${phone.replace(/[^\d+]/g, '')}`;
+  const mailHref = `mailto:${email}`;
+
   return (
     <div className="pt-24 lg:pt-32 pb-24 bg-white">
       {/* Header Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 px-4">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
         <span className="text-primary font-bold uppercase tracking-widest text-xs mb-3 block">Get In Touch</span>
         <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 text-slate-900 leading-[1.1]">
           Professional Support, <br />
@@ -34,7 +40,7 @@ export default function Contact() {
               <p className="text-slate-500 font-medium">Have a question or need an estimate? Fill out the form below and our team will get back to you immediately.</p>
             </div>
 
-            <LeadForm />
+            <ContactForm />
 
             <div className="mt-8 flex items-center justify-center gap-4 text-slate-400 text-[11px] font-bold uppercase tracking-widest border-t border-slate-50 pt-8">
               <div className="flex items-center gap-2">
@@ -52,40 +58,43 @@ export default function Contact() {
             className="lg:col-span-5 space-y-8"
           >
             <div className="bg-slate-50 rounded-3xl p-8 border border-slate-100 space-y-8">
+
               {/* Phone */}
-              <div className="flex items-start gap-6 group">
+              <a href={telHref} className="flex items-start gap-6 group">
                 <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-primary shrink-0 group-hover:scale-110 transition-transform">
                   <Phone className="w-6 h-6" />
                 </div>
                 <div>
                   <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Call Us Anytime</h4>
-                  <p className="text-2xl font-bold text-primary tracking-tight leading-none mb-2">+1 631-676-4440</p>
+                  <p className="text-2xl font-bold text-primary tracking-tight leading-none mb-2">{phone}</p>
                   <p className="text-slate-500 text-sm font-medium">24/7 Emergency Response</p>
                 </div>
-              </div>
+              </a>
 
               {/* Email */}
-              <div className="flex items-start gap-6 group">
+              <a href={mailHref} className="flex items-start gap-6 group">
                 <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-primary shrink-0 group-hover:scale-110 transition-transform">
                   <Mail className="w-6 h-6" />
                 </div>
                 <div>
                   <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Email Us</h4>
-                  <p className="text-lg font-bold text-slate-900 leading-none mb-1">amcollisionandtowing@gmail.com</p>
+                  <p className="text-lg font-bold text-slate-900 leading-none mb-1 break-all">{email}</p>
                   <p className="text-slate-500 text-sm font-medium">We reply as soon as possible</p>
                 </div>
-              </div>
+              </a>
 
-              {/* Fax */}
-              <div className="flex items-start gap-6 group">
-                <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-primary shrink-0 group-hover:scale-110 transition-transform">
-                  <Phone className="w-6 h-6" />
+              {/* Fax — only shown if set */}
+              {fax && (
+                <div className="flex items-start gap-6 group">
+                  <div className="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-primary shrink-0 group-hover:scale-110 transition-transform">
+                    <Phone className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Fax</h4>
+                    <p className="text-2xl font-bold text-primary tracking-tight leading-none mb-2">{fax}</p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Fax</h4>
-                  <p className="text-2xl font-bold text-primary tracking-tight leading-none mb-2">+1 631-676-4443</p>
-                </div>
-              </div>
+              )}
 
               {/* Location */}
               <div className="flex items-start gap-6 group border-t border-slate-200 pt-8">
@@ -94,8 +103,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Our Location</h4>
-                  <p className="text-lg font-bold text-slate-900 leading-none mb-1">500 Johnson Ave, Bohemia,</p>
-                  <p className="text-slate-500 text-sm font-medium">New York 11716</p>
+                  <p className="text-lg font-bold text-slate-900 leading-snug mb-1 whitespace-pre-line">{address}</p>
                   <p className="text-slate-400 text-xs font-medium mt-1 uppercase">Conveniently located for you</p>
                 </div>
               </div>
@@ -133,7 +141,7 @@ export default function Contact() {
                 </div>
               </div>
               <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white shadow-sm">
-                <p className="text-[9px] font-bold text-slate-900 uppercase tracking-wider">500 Johnson Ave, Bohemia, NY 11716</p>
+                <p className="text-[9px] font-bold text-slate-900 uppercase tracking-wider">{address}</p>
               </div>
             </div>
           </motion.div>
