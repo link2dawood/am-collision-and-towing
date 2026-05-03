@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 import Admin from "./pages/Admin";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
+import ChatbaseWidget from "./components/ChatbaseWidget";
 import { AuthProvider } from "./contexts/AuthContext";
 import { SiteSettingsProvider, useSiteSettings } from "./contexts/SiteSettingsContext";
 import { Page, URL_TO_PAGE, PAGE_TO_URL } from "./types";
@@ -19,8 +20,6 @@ import DietsSupplimentPrivacyPolicy from "./pages/DietsSupplimentPrivacyPolicy";
 import DietsSupplimentTerms from "./pages/DietsSupplimentTerms";
 import PixelCatchPrivacyPolicy from "./pages/PixelCatchPrivacyPolicy";
 import PixelCatchTerms from "./pages/PixelCatchTerms";
-import ChatbaseWidget from "./components/ChatbaseWidget";
-import { Page } from "./types";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>(
@@ -101,8 +100,6 @@ function AppShell({
   renderPage: () => React.ReactNode;
 }) {
   const { settings } = useSiteSettings();
-  const phone = settings.general.phone;
-  const telHref = `tel:${phone.replace(/[^\d+]/g, '')}`;
 
   return (
     <div className="min-h-screen bg-iron text-[#e2e8f0] selection:bg-primary selection:text-white relative overflow-x-hidden">
@@ -118,16 +115,6 @@ function AppShell({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-        <Footer setPage={setCurrentPage} />
-        <ChatbaseWidget />
-
-        {/* Floating CTA for Tows */}
-        <div className="fixed bottom-8 left-8 z-40 hidden sm:block">
-          <motion.a
-            href="tel:+16316764440"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-3 bg-primary hover:bg-primary-dark text-white px-6 py-4 rounded-xl font-bold shadow-2xl shadow-primary/30 group tracking-tight border border-primary/20"
           >
             {renderPage()}
           </motion.div>
@@ -135,11 +122,12 @@ function AppShell({
       </main>
 
       <Footer setPage={setCurrentPage} />
+      <ChatbaseWidget />
 
       {/* Floating CTA for Tows */}
-      <div className="fixed bottom-8 right-8 z-40 hidden sm:block">
+      <div className="fixed bottom-8 left-8 z-40 hidden sm:block">
         <motion.a
-          href={telHref}
+          href={`tel:${settings.general.phone.replace(/[^\d+]/g, '')}`}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className="flex items-center gap-3 bg-primary hover:bg-primary-dark text-white px-6 py-4 rounded-xl font-bold shadow-2xl shadow-primary/30 group tracking-tight border border-primary/20"
