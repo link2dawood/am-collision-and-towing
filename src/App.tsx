@@ -18,6 +18,7 @@ import { SiteSettingsProvider, useSiteSettings } from "./contexts/SiteSettingsCo
 import { Page, URL_TO_PAGE, PAGE_TO_URL } from "./types";
 import DietsSupplimentPrivacyPolicy from "./pages/DietsSupplimentPrivacyPolicy";
 import DietsSupplimentTerms from "./pages/DietsSupplimentTerms";
+import PixelCatchHome from "./pages/PixelCatchHome";
 import PixelCatchPrivacyPolicy from "./pages/PixelCatchPrivacyPolicy";
 import PixelCatchTerms from "./pages/PixelCatchTerms";
 
@@ -83,6 +84,8 @@ export default function App() {
         return <DietsSupplimentPrivacyPolicy />;
       case "apps-dietssuppliment-terms":
         return <DietsSupplimentTerms />;
+      case "extensions-pixelcatch-home":
+        return <PixelCatchHome />;
       case "extensions-pixelcatch-privacy":
         return <PixelCatchPrivacyPolicy />;
       case "extensions-pixelcatch-terms":
