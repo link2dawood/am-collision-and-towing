@@ -19,6 +19,8 @@ import DietsSupplimentPrivacyPolicy from "./pages/DietsSupplimentPrivacyPolicy";
 import DietsSupplimentTerms from "./pages/DietsSupplimentTerms";
 import PixelCatchPrivacyPolicy from "./pages/PixelCatchPrivacyPolicy";
 import PixelCatchTerms from "./pages/PixelCatchTerms";
+import ChatbaseWidget from "./components/ChatbaseWidget";
+import { Page } from "./types";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>(
@@ -116,6 +118,16 @@ function AppShell({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
+        <Footer setPage={setCurrentPage} />
+        <ChatbaseWidget />
+
+        {/* Floating CTA for Tows */}
+        <div className="fixed bottom-8 left-8 z-40 hidden sm:block">
+          <motion.a
+            href="tel:+16316764440"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-3 bg-primary hover:bg-primary-dark text-white px-6 py-4 rounded-xl font-bold shadow-2xl shadow-primary/30 group tracking-tight border border-primary/20"
           >
             {renderPage()}
           </motion.div>
