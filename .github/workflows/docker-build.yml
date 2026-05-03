@@ -11,18 +11,8 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  # JOB 1: CHECKOUT & SETUP
-  setup:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-  # JOB 2: BUILD DOCKER IMAGE
+  # JOB 1: BUILD DOCKER IMAGE
   build:
-    needs: setup
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -49,8 +39,6 @@ jobs:
           tags: |
             type=ref,event=branch
             type=sha,prefix={{branch}}-
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -62,11 +50,43 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  # JOB 3: NOTIFY SUCCESS (Optional)
-  notify:
+  # JOB 2: DEPLOY TO SERVER
+  deploy:
     needs: build
     runs-on: ubuntu-latest
-    if: success()
     steps:
-      - name: ✅ Build Complete
-        run: echo "Docker image built and pushed successfully!"
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: 22
+          script: |
+            set -e
+
+            BRANCH="${{ github.ref_name }}"
+            IMAGE="ghcr.io/${{ github.repository }}:${BRANCH}"
+            CONTAINER="am-collision-${BRANCH}"
+
+            echo "▶ Logging into ghcr.io..."
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io \
+              -u "${{ github.actor }}" --password-stdin
+
+            echo "▶ Pulling $IMAGE..."
+            docker pull "$IMAGE"
+
+            echo "▶ Replacing container $CONTAINER..."
+            docker stop "$CONTAINER" 2>/dev/null || true
+            docker rm   "$CONTAINER" 2>/dev/null || true
+
+            docker run -d \
+              --name "$CONTAINER" \
+              --restart unless-stopped \
+              -p 80:80 \
+              "$IMAGE"
+
+            echo "▶ Pruning old images..."
+            docker image prune -f
+
+            echo "✅ $IMAGE deployed successfully"
