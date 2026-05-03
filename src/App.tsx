@@ -14,10 +14,26 @@ import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
 import { AuthProvider } from "./contexts/AuthContext";
 import { SiteSettingsProvider, useSiteSettings } from "./contexts/SiteSettingsContext";
-import { Page } from "./types";
+import { Page, URL_TO_PAGE, PAGE_TO_URL } from "./types";
+import DietsSupplimentPrivacyPolicy from "./pages/DietsSupplimentPrivacyPolicy";
+import DietsSupplimentTerms from "./pages/DietsSupplimentTerms";
+import PixelCatchPrivacyPolicy from "./pages/PixelCatchPrivacyPolicy";
+import PixelCatchTerms from "./pages/PixelCatchTerms";
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<Page>("home");
+  const [currentPage, setCurrentPage] = useState<Page>(
+    () => URL_TO_PAGE[window.location.pathname] ?? "home"
+  );
+
+  const navigateTo = (page: Page) => {
+    const url = PAGE_TO_URL[page];
+    if (url) {
+      history.pushState(null, "", url);
+    } else if (PAGE_TO_URL[currentPage]) {
+      history.pushState(null, "", "/");
+    }
+    setCurrentPage(page);
+  };
 
   // Handle scroll top on page change
   useEffect(() => {
@@ -31,7 +47,7 @@ export default function App() {
   const renderPage = () => {
     switch (currentPage) {
       case "home":
-        return <Home setPage={setCurrentPage} />;
+        return <Home setPage={navigateTo} />;
       case "services":
         return <Services />;
       case "towing":
@@ -43,22 +59,30 @@ export default function App() {
       case "contact":
         return <Contact />;
       case "login":
-        return <Login setPage={setCurrentPage} />;
+        return <Login setPage={navigateTo} />;
       case "signup":
-        return <Signup setPage={setCurrentPage} />;
+        return <Signup setPage={navigateTo} />;
       case "profile":
-        return <Profile setPage={setCurrentPage} />;
+        return <Profile setPage={navigateTo} />;
       case "admin":
-        return <Admin setPage={setCurrentPage} />;
+        return <Admin setPage={navigateTo} />;
+      case "apps-dietssuppliment-privacy":
+        return <DietsSupplimentPrivacyPolicy />;
+      case "apps-dietssuppliment-terms":
+        return <DietsSupplimentTerms />;
+      case "extensions-pixelcatch-privacy":
+        return <PixelCatchPrivacyPolicy />;
+      case "extensions-pixelcatch-terms":
+        return <PixelCatchTerms />;
       default:
-        return <Home setPage={setCurrentPage} />;
+        return <Home setPage={navigateTo} />;
     }
   };
 
   return (
     <SiteSettingsProvider>
       <AuthProvider>
-        <AppShell currentPage={currentPage} setCurrentPage={setCurrentPage} renderPage={renderPage} />
+        <AppShell currentPage={currentPage} setCurrentPage={navigateTo} renderPage={renderPage} />
       </AuthProvider>
     </SiteSettingsProvider>
   );
