@@ -12,6 +12,12 @@ RUN npm install -g pnpm && pnpm install --frozen-lockfile
 # Copy source
 COPY . .
 
+# Receive Vite env vars at build time
+ARG VITE_SUPABASE_URL
+ARG VITE_SUPABASE_ANON_KEY
+ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
+ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
+
 # Build the app
 RUN pnpm run build
 
@@ -19,9 +25,6 @@ RUN pnpm run build
 FROM node:22-alpine
 
 WORKDIR /app
-
-# Install pnpm
-RUN npm install -g pnpm
 
 # Install serve to run the app
 RUN npm install -g serve
