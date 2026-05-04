@@ -37,6 +37,7 @@ interface UserProfile {
 interface GalleryImage {
   id: string; name: string; url: string; storage_path: string;
   alt_text: string | null; tags: string[]; sort_order: number; created_at: string;
+  mime_type?: string;
 }
 interface SiteSettings {
   general:       { site_name: string; tagline: string; phone: string; fax: string; email: string; address: string; };
@@ -256,7 +257,7 @@ export default function Admin({ setPage }: AdminProps) {
   // ── gallery actions ───────────────────────────────────────
   const uploadImage = async (file: File) => {
     setUploading(true);
-    const ext = file.name.split('.').pop() ?? 'jpg';
+    const ext = file.name.split('.').pop()?.toLowerCase() ?? 'bin';
     const path = `gallery/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
     const { error: upErr } = await supabase.storage.from('media').upload(path, file, { cacheControl: '31536000' });
@@ -760,20 +761,20 @@ export default function Admin({ setPage }: AdminProps) {
         {/* ── GALLERY ── */}
         {activeTab === 'gallery' && (
           <motion.div key="gallery" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
-            <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFileInput} />
+            <input ref={fileInputRef} type="file" accept="image/*,video/*" multiple className="hidden" onChange={handleFileInput} />
 
             {/* Toolbar */}
             <div className="bg-[#1a1f2e] border border-[#2a3142] rounded-2xl p-4 mb-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
               <div>
-                <p className="text-white font-semibold">{gallery.length} image{gallery.length !== 1 ? 's' : ''}</p>
-                <p className="text-slate-500 text-xs mt-0.5">Click any image to edit its tags, title &amp; sort order</p>
+                <p className="text-white font-semibold">{gallery.length} item{gallery.length !== 1 ? 's' : ''}</p>
+                <p className="text-slate-500 text-xs mt-0.5">Click any item to edit its tags, title &amp; sort order</p>
               </div>
               <button
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading}
                 className="flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-dark text-white text-sm font-semibold rounded-xl transition-all disabled:opacity-60"
               >
-                {uploading ? <><Loader2 className="w-4 h-4 animate-spin" /> Uploading…</> : <><Upload className="w-4 h-4" /> Upload Images</>}
+                {uploading ? <><Loader2 className="w-4 h-4 animate-spin" /> Uploading…</> : <><Upload className="w-4 h-4" /> Upload Media</>}
               </button>
             </div>
 
@@ -787,10 +788,10 @@ export default function Admin({ setPage }: AdminProps) {
                 ) : gallery.length === 0 ? (
                   <div className="bg-[#1a1f2e] border-2 border-dashed border-[#2a3142] rounded-2xl py-24 text-center">
                     <ImageIcon className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-                    <p className="text-slate-400 font-medium mb-2">No images yet</p>
-                    <p className="text-slate-600 text-sm mb-6">Upload images to build your gallery</p>
+                    <p className="text-slate-400 font-medium mb-2">No media yet</p>
+                    <p className="text-slate-600 text-sm mb-6">Upload images or videos to build your gallery</p>
                     <button onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold rounded-xl mx-auto transition-all hover:bg-primary-dark">
-                      <Upload className="w-4 h-4" /> Upload your first image
+                      <Upload className="w-4 h-4" /> Upload your first media
                     </button>
                   </div>
                 ) : (
@@ -806,7 +807,11 @@ export default function Admin({ setPage }: AdminProps) {
                           editingImg?.id === img.id ? 'border-primary shadow-lg shadow-primary/20' : 'border-[#2a3142] hover:border-primary/50'
                         }`}
                       >
-                        <img src={img.url} alt={img.alt_text || img.name} className="w-full h-full object-cover" loading="lazy" />
+                        {img.mime_type?.startsWith('video/') || img.url.match(/\.(mp4|webm|ogg|mov)$/i) ? (
+                          <video src={img.url} className="w-full h-full object-cover" muted loop playsInline onMouseOver={e => (e.target as HTMLVideoElement).play()} onMouseOut={e => { const v = e.target as HTMLVideoElement; v.pause(); v.currentTime = 0; }} />
+                        ) : (
+                          <img src={img.url} alt={img.alt_text || img.name} className="w-full h-full object-cover" loading="lazy" />
+                        )}
 
                         {/* Tags badge */}
                         {img.tags && img.tags.length > 0 && (
@@ -860,7 +865,7 @@ export default function Admin({ setPage }: AdminProps) {
                     <div className="flex items-center justify-between px-4 py-3 border-b border-[#2a3142]">
                       <div className="flex items-center gap-2">
                         <Tag className="w-4 h-4 text-primary" />
-                        <span className="text-sm font-bold text-white">Edit Image</span>
+                        <span className="text-sm font-bold text-white">Edit Media</span>
                       </div>
                       <button onClick={() => { setEditingImg(null); setEditDraft(null); }}
                         className="p-1 text-slate-500 hover:text-white transition-colors rounded-lg hover:bg-[#2a3142]">
@@ -870,7 +875,11 @@ export default function Admin({ setPage }: AdminProps) {
 
                     {/* Thumbnail */}
                     <div className="relative aspect-video bg-[#111520]">
-                      <img src={editingImg.url} alt={editDraft.alt_text || editDraft.name} className="w-full h-full object-cover" />
+                      {editingImg.mime_type?.startsWith('video/') || editingImg.url.match(/\.(mp4|webm|ogg|mov)$/i) ? (
+                        <video src={editingImg.url} className="w-full h-full object-cover" controls playsInline />
+                      ) : (
+                        <img src={editingImg.url} alt={editDraft.alt_text || editDraft.name} className="w-full h-full object-cover" />
+                      )}
                     </div>
 
                     <div className="p-4 space-y-4">

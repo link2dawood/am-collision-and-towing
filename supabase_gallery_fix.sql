@@ -55,12 +55,12 @@ VALUES (
   'media',
   true,
   52428800,   -- 50 MB limit per file
-  ARRAY['image/jpeg','image/jpg','image/png','image/webp','image/gif','image/svg+xml']
+  ARRAY['image/jpeg','image/jpg','image/png','image/webp','image/gif','image/svg+xml','video/mp4','video/webm','video/ogg','video/quicktime']
 )
 ON CONFLICT (id) DO UPDATE SET
   public = true,
   file_size_limit = 52428800,
-  allowed_mime_types = ARRAY['image/jpeg','image/jpg','image/png','image/webp','image/gif','image/svg+xml'];
+  allowed_mime_types = ARRAY['image/jpeg','image/jpg','image/png','image/webp','image/gif','image/svg+xml','video/mp4','video/webm','video/ogg','video/quicktime'];
 
 -- ── STEP 5: Storage RLS policies for the "media" bucket ─────
 -- Drop old policies if any exist

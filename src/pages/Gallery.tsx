@@ -10,6 +10,7 @@ interface GalleryImage {
   alt_text: string | null;
   tags: string[];
   created_at: string;
+  mime_type?: string;
 }
 
 // Static fallback images shown when no images have been uploaded yet
@@ -34,7 +35,7 @@ export default function Gallery() {
       setLoading(true);
       const { data, error } = await supabase
         .from('media_gallery')
-        .select('id, name, url, alt_text, tags, created_at')
+        .select('id, name, url, alt_text, tags, created_at, mime_type')
         .order('sort_order')
         .order('created_at', { ascending: false });
 
@@ -128,13 +129,25 @@ export default function Gallery() {
                   transition={{ duration: 0.35, delay: i * 0.04 }}
                   className="relative aspect-square overflow-hidden group rounded-2xl shadow-sm border border-slate-100"
                 >
-                  <img
-                    src={item.url}
-                    alt={item.alt_text || item.name}
-                    className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
-                    loading="lazy"
-                    referrerPolicy="no-referrer"
-                  />
+                  {item.mime_type?.startsWith('video/') || item.url.match(/\.(mp4|webm|ogg|mov)$/i) ? (
+                    <video
+                      src={item.url}
+                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
+                      muted
+                      loop
+                      playsInline
+                      onMouseOver={e => (e.target as HTMLVideoElement).play()}
+                      onMouseOut={e => { const v = e.target as HTMLVideoElement; v.pause(); v.currentTime = 0; }}
+                    />
+                  ) : (
+                    <img
+                      src={item.url}
+                      alt={item.alt_text || item.name}
+                      className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
+                      loading="lazy"
+                      referrerPolicy="no-referrer"
+                    />
+                  )}
                   <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-6 backdrop-blur-[2px]">
                     {item.tags && item.tags.length > 0 && (
                       <span className="text-primary text-[10px] font-bold uppercase tracking-[0.2em] mb-2 block">
