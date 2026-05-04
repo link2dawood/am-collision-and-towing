@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type ChangeEvent, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
@@ -32,7 +32,7 @@ interface Quote {
   quote_amount: number | null; created_at: string;
 }
 interface UserProfile {
-  id: string; full_name: string | null; phone: string | null; role: string;
+  id: string; email: string | null; full_name: string | null; phone: string | null; role: string; created_at: string;
 }
 interface GalleryImage {
   id: string; name: string; url: string; storage_path: string;
@@ -157,10 +157,46 @@ export default function Admin({ setPage }: AdminProps) {
 
   const fetchUsers = useCallback(async () => {
     setUsersLoading(true);
-    const { data } = await supabase.from('profiles').select('*').order('role');
-    setUsers(data || []);
+    const { data, error } = await supabase.rpc('admin_list_users');
+    if (error) {
+      console.error('admin_list_users error:', error);
+      setUsers([]);
+    } else {
+      setUsers((data || []) as UserProfile[]);
+    }
     setUsersLoading(false);
   }, []);
+
+  // ── admin role management ─────────────────────────────────
+  const [promoteEmail, setPromoteEmail] = useState('');
+  const [promoting, setPromoting] = useState(false);
+  const [roleUpdatingId, setRoleUpdatingId] = useState<string | null>(null);
+
+  const promoteAdmin = useCallback(async () => {
+    const email = promoteEmail.trim();
+    if (!email) return;
+    setPromoting(true);
+    const { error } = await supabase.rpc('admin_promote_by_email', { p_email: email });
+    setPromoting(false);
+    if (error) {
+      alert(`Could not promote user: ${error.message}`);
+      return;
+    }
+    setPromoteEmail('');
+    fetchUsers();
+  }, [promoteEmail, fetchUsers]);
+
+  const demoteAdmin = useCallback(async (u: UserProfile) => {
+    if (!confirm(`Remove admin access from ${u.email || u.full_name || u.id}?`)) return;
+    setRoleUpdatingId(u.id);
+    const { error } = await supabase.rpc('admin_demote', { p_user_id: u.id });
+    setRoleUpdatingId(null);
+    if (error) {
+      alert(`Could not demote: ${error.message}`);
+      return;
+    }
+    fetchUsers();
+  }, [fetchUsers]);
 
   const fetchGallery = useCallback(async () => {
     setGalleryLoading(true);
@@ -727,6 +763,34 @@ export default function Admin({ setPage }: AdminProps) {
         {/* ── USERS ── */}
         {activeTab === 'users' && (
           <motion.div key="users" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
+            {/* Promote by email */}
+            <div className="bg-[#1a1f2e] border border-[#2a3142] rounded-2xl p-5 mb-5">
+              <h3 className="text-sm font-bold text-white mb-1">Add Admin</h3>
+              <p className="text-slate-400 text-xs mb-4">
+                Enter the email of an existing signed-up user. They'll be promoted to admin instantly.
+              </p>
+              <form
+                onSubmit={(e: FormEvent) => { e.preventDefault(); promoteAdmin(); }}
+                className="flex flex-col sm:flex-row gap-2"
+              >
+                <input
+                  type="email"
+                  required
+                  placeholder="user@example.com"
+                  value={promoteEmail}
+                  onChange={(e) => setPromoteEmail(e.target.value)}
+                  className={inp + ' flex-1'}
+                />
+                <button
+                  type="submit"
+                  disabled={promoting || !promoteEmail.trim()}
+                  className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-dark text-white text-sm font-semibold rounded-xl transition-all disabled:opacity-60"
+                >
+                  {promoting ? <><Loader2 className="w-4 h-4 animate-spin" /> Promoting…</> : <><Plus className="w-4 h-4" /> Make Admin</>}
+                </button>
+              </form>
+            </div>
+
             <div className="bg-[#1a1f2e] border border-[#2a3142] rounded-2xl shadow-xl overflow-hidden">
               <div className="px-6 py-4 border-b border-[#2a3142]">
                 <h2 className="text-lg font-bold text-white">Registered Users</h2>
@@ -735,20 +799,36 @@ export default function Admin({ setPage }: AdminProps) {
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
                   <thead className="bg-[#111520] border-b border-[#2a3142]">
-                    <tr>{['User', 'Phone', 'Role'].map(h => (
+                    <tr>{['User', 'Email', 'Phone', 'Role', ''].map(h => (
                       <th key={h} className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-400">{h}</th>
                     ))}</tr>
                   </thead>
                   <tbody className="divide-y divide-[#2a3142]">
                     {usersLoading ? (
-                      <tr><td colSpan={3} className="px-6 py-16 text-center"><Loader2 className="w-6 h-6 animate-spin text-primary mx-auto mb-2" /><p className="text-slate-400 text-sm">Loading…</p></td></tr>
+                      <tr><td colSpan={5} className="px-6 py-16 text-center"><Loader2 className="w-6 h-6 animate-spin text-primary mx-auto mb-2" /><p className="text-slate-400 text-sm">Loading…</p></td></tr>
                     ) : users.length === 0 ? (
-                      <tr><td colSpan={3} className="px-6 py-16 text-center"><Users className="w-10 h-10 text-slate-600 mx-auto mb-3" /><p className="text-slate-400">No users yet</p></td></tr>
+                      <tr><td colSpan={5} className="px-6 py-16 text-center"><Users className="w-10 h-10 text-slate-600 mx-auto mb-3" /><p className="text-slate-400">No users yet</p></td></tr>
                     ) : users.map((u, i) => (
                       <motion.tr key={u.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.03 }} className="hover:bg-[#202636] transition-colors">
-                        <td className="px-6 py-4"><div className="flex items-center gap-3"><div className="w-9 h-9 rounded-full bg-[#2a3142] flex items-center justify-center border border-[#3a4152] shrink-0"><span className="text-sm font-bold text-primary">{(u.full_name || '?').charAt(0).toUpperCase()}</span></div><div><div className="font-semibold text-white">{u.full_name || <span className="text-slate-500 italic">No name</span>}</div><div className="text-xs text-slate-500">{u.id.substring(0, 16)}…</div></div></div></td>
+                        <td className="px-6 py-4"><div className="flex items-center gap-3"><div className="w-9 h-9 rounded-full bg-[#2a3142] flex items-center justify-center border border-[#3a4152] shrink-0"><span className="text-sm font-bold text-primary">{(u.full_name || u.email || '?').charAt(0).toUpperCase()}</span></div><div><div className="font-semibold text-white">{u.full_name || <span className="text-slate-500 italic">No name</span>}</div><div className="text-xs text-slate-500">{u.id.substring(0, 16)}…</div></div></div></td>
+                        <td className="px-6 py-4">{u.email ? <a href={`mailto:${u.email}`} className="flex items-center gap-1.5 text-slate-300 hover:text-primary transition-colors text-sm"><Mail className="w-3.5 h-3.5" />{u.email}</a> : <span className="text-slate-600 text-sm">—</span>}</td>
                         <td className="px-6 py-4">{u.phone ? <a href={`tel:${u.phone}`} className="flex items-center gap-1.5 text-slate-300 hover:text-primary transition-colors text-sm"><Phone className="w-3.5 h-3.5" />{u.phone}</a> : <span className="text-slate-600 text-sm">—</span>}</td>
                         <td className="px-6 py-4"><span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${u.role === 'admin' ? 'bg-primary/10 text-primary border-primary/20' : 'bg-slate-500/10 text-slate-400 border-slate-500/20'}`}>{u.role}</span></td>
+                        <td className="px-6 py-4 text-right">
+                          {u.role === 'admin' && u.id !== user?.id && (
+                            <button
+                              onClick={() => demoteAdmin(u)}
+                              disabled={roleUpdatingId === u.id}
+                              className="text-xs font-semibold text-slate-400 hover:text-red-400 transition-colors disabled:opacity-60 inline-flex items-center gap-1"
+                            >
+                              {roleUpdatingId === u.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
+                              Remove admin
+                            </button>
+                          )}
+                          {u.id === user?.id && (
+                            <span className="text-xs text-slate-600 italic">you</span>
+                          )}
+                        </td>
                       </motion.tr>
                     ))}
                   </tbody>

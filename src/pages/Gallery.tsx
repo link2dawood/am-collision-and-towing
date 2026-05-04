@@ -2,27 +2,32 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useEffect, useState } from 'react';
 import { Instagram, ArrowRight, Loader2, ImageIcon } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import ReelsSection from '../components/ReelsSection';
 
 interface GalleryImage {
   id: string;
   name: string;
   url: string;
   alt_text: string | null;
+  mime_type: string | null;
   tags: string[];
   created_at: string;
-  mime_type?: string;
 }
+
+const VIDEO_EXT_RE = /\.(mp4|webm|mov|m4v|ogv)(\?|$)/i;
+const isVideoRow = (row: { mime_type: string | null; url: string }) =>
+  (row.mime_type?.startsWith('video/') ?? false) || VIDEO_EXT_RE.test(row.url);
 
 // Static fallback images shown when no images have been uploaded yet
 const FALLBACK_ITEMS = [
-  { id: 'f1', name: 'Rear End Impact',        url: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&q=80&w=800', alt_text: 'Rear End Impact',        tags: ['before'], created_at: '' },
-  { id: 'f2', name: 'Structural Restoration', url: 'https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?auto=format&fit=crop&q=80&w=800', alt_text: 'Structural Restoration', tags: ['after'],  created_at: '' },
-  { id: 'f3', name: 'Frame Precision Work',   url: '/bikeframe.webp',                                                                               alt_text: 'Frame Precision Work',   tags: ['process'], created_at: '' },
-  { id: 'f4', name: 'Luxury Refinishing',     url: '/luxery.jpg',                                                                                   alt_text: 'Luxury Refinishing',     tags: ['after'],  created_at: '' },
-  { id: 'f5', name: 'Front Collision Damage', url: '/front.jpg',                                                                                    alt_text: 'Front Collision Damage', tags: ['before'], created_at: '' },
-  { id: 'f6', name: 'Factory-Grade Restore',  url: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=800',    alt_text: 'Factory-Grade Restore',  tags: ['after'],  created_at: '' },
-  { id: 'f7', name: 'Certified Painting',     url: '/paint.jpg',                                                                                    alt_text: 'Certified Painting',     tags: ['process'], created_at: '' },
-  { id: 'f8', name: 'Gloss Verification',     url: '/gloss.jpg',                                                                                    alt_text: 'Gloss Verification',     tags: ['after'],  created_at: '' },
+  { id: 'f1', name: 'Rear End Impact',        url: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&q=80&w=800', alt_text: 'Rear End Impact',        mime_type: 'image/jpeg', tags: ['before'], created_at: '' },
+  { id: 'f2', name: 'Structural Restoration', url: 'https://images.unsplash.com/photo-1517524206127-48bbd363f3d7?auto=format&fit=crop&q=80&w=800', alt_text: 'Structural Restoration', mime_type: 'image/jpeg', tags: ['after'],  created_at: '' },
+  { id: 'f3', name: 'Frame Precision Work',   url: '/bikeframe.webp',                                                                               alt_text: 'Frame Precision Work',   mime_type: 'image/webp', tags: ['process'], created_at: '' },
+  { id: 'f4', name: 'Luxury Refinishing',     url: '/luxery.jpg',                                                                                   alt_text: 'Luxury Refinishing',     mime_type: 'image/jpeg', tags: ['after'],  created_at: '' },
+  { id: 'f5', name: 'Front Collision Damage', url: '/front.jpg',                                                                                    alt_text: 'Front Collision Damage', mime_type: 'image/jpeg', tags: ['before'], created_at: '' },
+  { id: 'f6', name: 'Factory-Grade Restore',  url: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=800',    alt_text: 'Factory-Grade Restore',  mime_type: 'image/jpeg', tags: ['after'],  created_at: '' },
+  { id: 'f7', name: 'Certified Painting',     url: '/paint.jpg',                                                                                    alt_text: 'Certified Painting',     mime_type: 'image/jpeg', tags: ['process'], created_at: '' },
+  { id: 'f8', name: 'Gloss Verification',     url: '/gloss.jpg',                                                                                    alt_text: 'Gloss Verification',     mime_type: 'image/jpeg', tags: ['after'],  created_at: '' },
 ];
 
 export default function Gallery() {
@@ -35,7 +40,7 @@ export default function Gallery() {
       setLoading(true);
       const { data, error } = await supabase
         .from('media_gallery')
-        .select('id, name, url, alt_text, tags, created_at, mime_type')
+        .select('id, name, url, alt_text, mime_type, tags, created_at')
         .order('sort_order')
         .order('created_at', { ascending: false });
 
@@ -49,8 +54,11 @@ export default function Gallery() {
     })();
   }, []);
 
+  // Reels render in their own section — keep only images in the grid
+  const onlyImages = images.filter((row) => !isVideoRow(row));
+
   // If no images uploaded yet, fall back to static examples
-  const displayImages = images.length > 0 ? images : FALLBACK_ITEMS;
+  const displayImages = onlyImages.length > 0 ? onlyImages : FALLBACK_ITEMS;
   const usingFallback = images.length === 0 && !loading;
 
   // Collect all unique tags from images for dynamic filter buttons
@@ -161,6 +169,9 @@ export default function Gallery() {
             </AnimatePresence>
           </div>
         )}
+
+        {/* Reels — vertical 9:16 video feed (Instagram / TikTok style) */}
+        <ReelsSection />
 
         {/* Social Feed Banner */}
         <div className="mt-32 bg-slate-900 rounded-3xl p-12 lg:p-20 text-center relative overflow-hidden">
