@@ -35,20 +35,29 @@ export default function Login({ setPage }: LoginProps) {
         .from('profiles')
         .select('role')
         .eq('id', data.user.id)
-        .single();
+        .maybeSingle();
 
       if (!profile) {
-        const { data: newProfile } = await supabase
+        // Profile row should already exist via the on-signup trigger.
+        // If it doesn't (older accounts, trigger missing), upsert and ignore duplicates.
+        await supabase
           .from('profiles')
-          .insert({
-            id: data.user.id,
-            full_name: data.user.user_metadata?.full_name || null,
-            phone: data.user.user_metadata?.phone || null,
-            role: 'user',
-          })
+          .upsert(
+            {
+              id: data.user.id,
+              full_name: data.user.user_metadata?.full_name || null,
+              phone: data.user.user_metadata?.phone || null,
+              role: 'user',
+            },
+            { onConflict: 'id', ignoreDuplicates: true },
+          );
+
+        const { data: refetched } = await supabase
+          .from('profiles')
           .select('role')
-          .single();
-        profile = newProfile;
+          .eq('id', data.user.id)
+          .maybeSingle();
+        profile = refetched;
       }
 
       if (profile?.role === 'admin') {
