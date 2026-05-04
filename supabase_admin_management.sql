@@ -39,6 +39,76 @@ BEGIN
 END;
 $$;
 
+-- ── Create a brand-new admin (name + email + password) ──────
+-- Email is auto-confirmed (no verification email sent). If the
+-- email already belongs to a user, that user is promoted instead.
+CREATE OR REPLACE FUNCTION public.admin_create_admin(
+  p_email     text,
+  p_password  text,
+  p_full_name text
+)
+RETURNS uuid
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, auth, extensions
+AS $$
+DECLARE
+  v_uid      uuid;
+  v_existing uuid;
+  v_email    text := lower(trim(p_email));
+  v_name     text := NULLIF(trim(p_full_name), '');
+BEGIN
+  IF NOT public.is_admin() THEN
+    RAISE EXCEPTION 'Permission denied: admin only';
+  END IF;
+
+  IF v_email IS NULL OR v_email = '' THEN
+    RAISE EXCEPTION 'Email is required';
+  END IF;
+  IF v_email !~ '^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$' THEN
+    RAISE EXCEPTION 'Invalid email address';
+  END IF;
+  IF p_password IS NULL OR length(p_password) < 6 THEN
+    RAISE EXCEPTION 'Password must be at least 6 characters';
+  END IF;
+
+  SELECT id INTO v_existing FROM auth.users WHERE lower(email) = v_email LIMIT 1;
+  IF v_existing IS NOT NULL THEN
+    UPDATE public.profiles
+      SET role      = 'admin',
+          full_name = COALESCE(v_name, full_name)
+      WHERE id = v_existing;
+    RETURN v_existing;
+  END IF;
+
+  v_uid := gen_random_uuid();
+
+  INSERT INTO auth.users (
+    instance_id, id, aud, role, email,
+    encrypted_password, email_confirmed_at,
+    raw_app_meta_data, raw_user_meta_data,
+    created_at, updated_at,
+    confirmation_token, email_change, email_change_token_new, recovery_token
+  ) VALUES (
+    '00000000-0000-0000-0000-000000000000',
+    v_uid, 'authenticated', 'authenticated', v_email,
+    extensions.crypt(p_password, extensions.gen_salt('bf')),
+    now(),
+    '{"provider":"email","providers":["email"]}'::jsonb,
+    jsonb_build_object('full_name', v_name),
+    now(), now(),
+    '', '', '', ''
+  );
+
+  UPDATE public.profiles
+    SET role      = 'admin',
+        full_name = COALESCE(v_name, full_name)
+    WHERE id = v_uid;
+
+  RETURN v_uid;
+END;
+$$;
+
 -- ── Promote a user to admin by their email ───────────────────
 CREATE OR REPLACE FUNCTION public.admin_promote_by_email(p_email text)
 RETURNS uuid
@@ -98,6 +168,7 @@ END;
 $$;
 
 -- Allow authenticated users to call these (the fns themselves enforce admin).
-GRANT EXECUTE ON FUNCTION public.admin_list_users()             TO authenticated;
-GRANT EXECUTE ON FUNCTION public.admin_promote_by_email(text)   TO authenticated;
-GRANT EXECUTE ON FUNCTION public.admin_demote(uuid)             TO authenticated;
+GRANT EXECUTE ON FUNCTION public.admin_list_users()                       TO authenticated;
+GRANT EXECUTE ON FUNCTION public.admin_create_admin(text, text, text)     TO authenticated;
+GRANT EXECUTE ON FUNCTION public.admin_promote_by_email(text)             TO authenticated;
+GRANT EXECUTE ON FUNCTION public.admin_demote(uuid)                       TO authenticated;

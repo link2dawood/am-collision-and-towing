@@ -168,23 +168,34 @@ export default function Admin({ setPage }: AdminProps) {
   }, []);
 
   // ── admin role management ─────────────────────────────────
-  const [promoteEmail, setPromoteEmail] = useState('');
-  const [promoting, setPromoting] = useState(false);
+  const [newAdmin, setNewAdmin] = useState({ name: '', email: '', password: '' });
+  const [creatingAdmin, setCreatingAdmin] = useState(false);
+  const [showAdminPwd, setShowAdminPwd] = useState(false);
   const [roleUpdatingId, setRoleUpdatingId] = useState<string | null>(null);
 
-  const promoteAdmin = useCallback(async () => {
-    const email = promoteEmail.trim();
-    if (!email) return;
-    setPromoting(true);
-    const { error } = await supabase.rpc('admin_promote_by_email', { p_email: email });
-    setPromoting(false);
-    if (error) {
-      alert(`Could not promote user: ${error.message}`);
+  const createAdmin = useCallback(async () => {
+    const email = newAdmin.email.trim();
+    const password = newAdmin.password;
+    const name = newAdmin.name.trim();
+    if (!email || !password) return;
+    if (password.length < 6) {
+      alert('Password must be at least 6 characters.');
       return;
     }
-    setPromoteEmail('');
+    setCreatingAdmin(true);
+    const { error } = await supabase.rpc('admin_create_admin', {
+      p_email: email,
+      p_password: password,
+      p_full_name: name,
+    });
+    setCreatingAdmin(false);
+    if (error) {
+      alert(`Could not create admin: ${error.message}`);
+      return;
+    }
+    setNewAdmin({ name: '', email: '', password: '' });
     fetchUsers();
-  }, [promoteEmail, fetchUsers]);
+  }, [newAdmin, fetchUsers]);
 
   const demoteAdmin = useCallback(async (u: UserProfile) => {
     if (!confirm(`Remove admin access from ${u.email || u.full_name || u.id}?`)) return;
@@ -763,31 +774,65 @@ export default function Admin({ setPage }: AdminProps) {
         {/* ── USERS ── */}
         {activeTab === 'users' && (
           <motion.div key="users" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}>
-            {/* Promote by email */}
+            {/* Create / promote admin */}
             <div className="bg-[#1a1f2e] border border-[#2a3142] rounded-2xl p-5 mb-5">
               <h3 className="text-sm font-bold text-white mb-1">Add Admin</h3>
               <p className="text-slate-400 text-xs mb-4">
-                Enter the email of an existing signed-up user. They'll be promoted to admin instantly.
+                Creates a new account with admin access. Email is auto-verified — they can sign in immediately.
+                If the email already belongs to a user, that user is promoted instead.
               </p>
               <form
-                onSubmit={(e: FormEvent) => { e.preventDefault(); promoteAdmin(); }}
-                className="flex flex-col sm:flex-row gap-2"
+                onSubmit={(e: FormEvent) => { e.preventDefault(); createAdmin(); }}
+                className="grid grid-cols-1 sm:grid-cols-2 gap-3"
               >
-                <input
-                  type="email"
-                  required
-                  placeholder="user@example.com"
-                  value={promoteEmail}
-                  onChange={(e) => setPromoteEmail(e.target.value)}
-                  className={inp + ' flex-1'}
-                />
-                <button
-                  type="submit"
-                  disabled={promoting || !promoteEmail.trim()}
-                  className="flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-dark text-white text-sm font-semibold rounded-xl transition-all disabled:opacity-60"
-                >
-                  {promoting ? <><Loader2 className="w-4 h-4 animate-spin" /> Promoting…</> : <><Plus className="w-4 h-4" /> Make Admin</>}
-                </button>
+                <Field label="Full Name">
+                  <input
+                    type="text"
+                    placeholder="Jane Doe"
+                    value={newAdmin.name}
+                    onChange={(e) => setNewAdmin(s => ({ ...s, name: e.target.value }))}
+                    className={inp}
+                  />
+                </Field>
+                <Field label="Email">
+                  <input
+                    type="email"
+                    required
+                    placeholder="admin@example.com"
+                    value={newAdmin.email}
+                    onChange={(e) => setNewAdmin(s => ({ ...s, email: e.target.value }))}
+                    className={inp}
+                  />
+                </Field>
+                <Field label="Password (min 6 chars)">
+                  <div className="relative">
+                    <input
+                      type={showAdminPwd ? 'text' : 'password'}
+                      required
+                      minLength={6}
+                      placeholder="••••••••"
+                      value={newAdmin.password}
+                      onChange={(e) => setNewAdmin(s => ({ ...s, password: e.target.value }))}
+                      className={inp + ' pr-20'}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowAdminPwd(v => !v)}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400 hover:text-white px-2 py-1"
+                    >
+                      {showAdminPwd ? 'Hide' : 'Show'}
+                    </button>
+                  </div>
+                </Field>
+                <div className="flex items-end">
+                  <button
+                    type="submit"
+                    disabled={creatingAdmin || !newAdmin.email.trim() || newAdmin.password.length < 6}
+                    className="w-full flex items-center justify-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-dark text-white text-sm font-semibold rounded-xl transition-all disabled:opacity-60"
+                  >
+                    {creatingAdmin ? <><Loader2 className="w-4 h-4 animate-spin" /> Creating…</> : <><Plus className="w-4 h-4" /> Create Admin</>}
+                  </button>
+                </div>
               </form>
             </div>
 
