@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { Page } from '../types';
-import { User, Phone, Mail, Loader2, LogOut, CheckCircle2 } from 'lucide-react';
+import { User, Phone, Mail, Loader2, LogOut, CheckCircle2, Lock, Eye, EyeOff } from 'lucide-react';
 
 interface ProfileProps {
   setPage: (page: Page) => void;
@@ -17,6 +17,15 @@ export default function Profile({ setPage }: ProfileProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+
+  // Password change
+  const [currentPwd, setCurrentPwd] = useState('');
+  const [newPwd, setNewPwd] = useState('');
+  const [confirmPwd, setConfirmPwd] = useState('');
+  const [showPwd, setShowPwd] = useState(false);
+  const [pwdLoading, setPwdLoading] = useState(false);
+  const [pwdError, setPwdError] = useState<string | null>(null);
+  const [pwdSuccess, setPwdSuccess] = useState(false);
 
   // Protect route
   useEffect(() => {
@@ -58,6 +67,54 @@ export default function Profile({ setPage }: ProfileProps) {
     }
     
     setLoading(false);
+  };
+
+  const handleChangePassword = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!user?.email) return;
+
+    setPwdError(null);
+    setPwdSuccess(false);
+
+    if (newPwd.length < 6) {
+      setPwdError('New password must be at least 6 characters.');
+      return;
+    }
+    if (newPwd !== confirmPwd) {
+      setPwdError('New passwords do not match.');
+      return;
+    }
+    if (newPwd === currentPwd) {
+      setPwdError('New password must be different from the current one.');
+      return;
+    }
+
+    setPwdLoading(true);
+
+    // Verify current password by re-authenticating.
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: user.email,
+      password: currentPwd,
+    });
+    if (signInError) {
+      setPwdLoading(false);
+      setPwdError('Current password is incorrect.');
+      return;
+    }
+
+    const { error: updateError } = await supabase.auth.updateUser({ password: newPwd });
+    setPwdLoading(false);
+
+    if (updateError) {
+      setPwdError('Failed to update password: ' + updateError.message);
+      return;
+    }
+
+    setCurrentPwd('');
+    setNewPwd('');
+    setConfirmPwd('');
+    setPwdSuccess(true);
+    setTimeout(() => setPwdSuccess(false), 3000);
   };
 
   const handleLogout = async () => {
@@ -194,6 +251,101 @@ export default function Profile({ setPage }: ProfileProps) {
               </button>
             </div>
           </form>
+
+          {/* ── Change Password ─────────────────────────────── */}
+          <div className="mt-10 pt-8 border-t border-[#2a3142]">
+            <h3 className="text-xl font-bold text-white mb-2">Change Password</h3>
+            <p className="text-slate-500 text-sm mb-6">
+              Enter your current password to confirm, then set a new one (min 6 characters).
+            </p>
+
+            <form onSubmit={handleChangePassword} className="space-y-5">
+              {pwdError && (
+                <div className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded-xl text-sm">
+                  {pwdError}
+                </div>
+              )}
+              {pwdSuccess && (
+                <div className="bg-green-500/10 border border-green-500/50 text-green-400 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5" />
+                  Password updated successfully.
+                </div>
+              )}
+
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-2">Current Password</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Lock className="h-5 w-5 text-slate-500" />
+                  </div>
+                  <input
+                    type={showPwd ? 'text' : 'password'}
+                    value={currentPwd}
+                    onChange={(e) => setCurrentPwd(e.target.value)}
+                    autoComplete="current-password"
+                    required
+                    className="w-full bg-[#111520] border border-[#2a3142] text-white rounded-xl pl-11 pr-12 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPwd(v => !v)}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 hover:text-white"
+                    aria-label={showPwd ? 'Hide passwords' : 'Show passwords'}
+                  >
+                    {showPwd ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">New Password</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <Lock className="h-5 w-5 text-slate-500" />
+                    </div>
+                    <input
+                      type={showPwd ? 'text' : 'password'}
+                      value={newPwd}
+                      onChange={(e) => setNewPwd(e.target.value)}
+                      autoComplete="new-password"
+                      minLength={6}
+                      required
+                      className="w-full bg-[#111520] border border-[#2a3142] text-white rounded-xl pl-11 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">Confirm New Password</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <Lock className="h-5 w-5 text-slate-500" />
+                    </div>
+                    <input
+                      type={showPwd ? 'text' : 'password'}
+                      value={confirmPwd}
+                      onChange={(e) => setConfirmPwd(e.target.value)}
+                      autoComplete="new-password"
+                      minLength={6}
+                      required
+                      className="w-full bg-[#111520] border border-[#2a3142] text-white rounded-xl pl-11 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2 flex justify-end">
+                <button
+                  type="submit"
+                  disabled={pwdLoading || !currentPwd || newPwd.length < 6 || newPwd !== confirmPwd}
+                  className="bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-primary/20 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {pwdLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Update Password'}
+                </button>
+              </div>
+            </form>
+          </div>
         </motion.div>
       </div>
     </div>
