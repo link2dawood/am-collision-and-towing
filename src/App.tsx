@@ -21,6 +21,7 @@ import DietsSupplimentTerms from "./pages/DietsSupplimentTerms";
 import PixelCatchHome from "./pages/PixelCatchHome";
 import PixelCatchPrivacyPolicy from "./pages/PixelCatchPrivacyPolicy";
 import PixelCatchTerms from "./pages/PixelCatchTerms";
+import PixelCatchSupport from "./pages/PixelCatchSupport";
 
 function pathToPage(pathname: string): Page {
   const normalized = pathname.replace(/\/$/, "") || "/";
@@ -90,6 +91,8 @@ export default function App() {
         return <PixelCatchPrivacyPolicy />;
       case "extensions-pixelcatch-terms":
         return <PixelCatchTerms />;
+      case "extensions-pixelcatch-support":
+        return <PixelCatchSupport />;
       default:
         return <Home setPage={navigateTo} />;
     }
@@ -115,6 +118,23 @@ function AppShell({
   renderPage: () => React.ReactNode;
 }) {
   const { settings } = useSiteSettings();
+  const isStandalone = currentPage.startsWith("extensions-pixelcatch-");
+
+  if (isStandalone) {
+    return (
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={currentPage}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          transition={{ duration: 0.3 }}
+        >
+          {renderPage()}
+        </motion.div>
+      </AnimatePresence>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-iron text-[#e2e8f0] selection:bg-primary selection:text-white relative overflow-x-hidden">

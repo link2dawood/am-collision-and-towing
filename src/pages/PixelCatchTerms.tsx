@@ -1,68 +1,79 @@
 export default function PixelCatchTerms() {
   return (
-    <div className="pt-24 lg:pt-32 pb-24 bg-white">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-bold text-slate-900 mb-2">Terms and Conditions</h1>
-        <p className="text-sm text-slate-500 mb-2">Product: PixelCatch — YouTube Video Downloader</p>
-        <p className="text-sm text-slate-500 mb-10">Last updated: May 4, 2025</p>
+    <div className="min-h-screen bg-[#0f1117] text-white">
+      <section className="max-w-3xl mx-auto px-6 pt-20 md:pt-28 pb-20">
+        <div className="mb-10">
+          <a
+            href="/extensions/pixel-catch"
+            className="text-sm text-white/50 hover:text-white transition-colors"
+          >
+            &larr; PixelCatch
+          </a>
+        </div>
 
-        <div className="prose prose-slate max-w-none space-y-8 text-slate-700 leading-relaxed">
+        <h1 className="text-4xl font-black tracking-tight mb-2">Terms and Conditions</h1>
+        <p className="text-sm text-white/40 mb-1">Product: PixelCatch — YouTube Video Downloader</p>
+        <p className="text-sm text-white/40 mb-12">Last updated: May 4, 2026</p>
+
+        <div className="space-y-8 text-white/70 leading-relaxed">
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-3">1. Acceptance of Terms</h2>
+            <h2 className="text-xl font-bold text-white mb-3">1. Acceptance of Terms</h2>
             <p>
-              By installing or using the PixelCatch browser extension and its companion native helper,
+              By installing or using the PixelCatch Chrome extension and its companion native helper,
               you agree to these Terms and Conditions in full. If you do not agree, do not install or
               use PixelCatch.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-3">2. Description of Service</h2>
+            <h2 className="text-xl font-bold text-white mb-3">2. Description of Service</h2>
             <p>
-              PixelCatch is a macOS browser extension that enables downloading of YouTube videos
-              (public, YouTube Premium, and channel members-only content) using a locally-installed
-              yt-dlp helper. All processing happens on your machine; no remote server is involved.
+              PixelCatch is a single-purpose Chrome extension on macOS that triggers a locally-installed
+              <code className="bg-white/10 px-1.5 py-0.5 rounded text-white/80"> yt-dlp </code>
+              helper to download YouTube videos to your Downloads folder. All processing happens on your
+              machine; no remote PixelCatch server is involved.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-3">3. Permitted Use</h2>
+            <h2 className="text-xl font-bold text-white mb-3">3. Permitted Use</h2>
             <p>You may use PixelCatch only for lawful purposes, including:</p>
             <ul className="list-disc pl-6 space-y-1 mt-2">
-              <li>Downloading content you have legitimate access to as a signed-in YouTube user</li>
               <li>Downloading your own YouTube uploads</li>
-              <li>Downloading public videos for personal, offline, or fair-use purposes consistent with applicable law</li>
-              <li>Downloading YouTube Premium streams you have paid for</li>
-              <li>Downloading channel members-only content for channels you are an active paying member of</li>
+              <li>Downloading public videos for personal use consistent with applicable copyright law (e.g., fair use / fair dealing)</li>
+              <li>Downloading YouTube Premium streams from your active paid subscription</li>
+              <li>Downloading members-only content from channels you are an active paying member of</li>
+              <li>Any other use expressly permitted by the rights holder</li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-3">4. Prohibited Use</h2>
+            <h2 className="text-xl font-bold text-white mb-3">4. Prohibited Use</h2>
             <p>You must not use PixelCatch to:</p>
             <ul className="list-disc pl-6 space-y-1 mt-2">
-              <li>Download content protected by Digital Rights Management (DRM) that PixelCatch cannot access without your signed-in session</li>
-              <li>Download content you do not have legitimate access to</li>
+              <li>Download content you do not have a legal right to access</li>
               <li>Redistribute, resell, or commercially exploit downloaded content without the rights holder's permission</li>
-              <li>Scrape YouTube at scale or in a manner that violates YouTube's Terms of Service</li>
-              <li>Circumvent technical protection measures beyond what yt-dlp ordinarily handles via your own session cookies</li>
+              <li>Scrape YouTube at scale or in any manner that violates YouTube's Terms of Service</li>
+              <li>Circumvent technical protection measures beyond what yt-dlp ordinarily handles via your own session</li>
               <li>Use downloaded content in violation of copyright law or any applicable license</li>
+              <li>Engage in any activity that violates the Chrome Web Store Developer Program Policies or YouTube's Terms of Service</li>
             </ul>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-3">5. YouTube Terms of Service</h2>
+            <h2 className="text-xl font-bold text-white mb-3">5. YouTube Terms of Service</h2>
             <p>
-              Downloading YouTube videos may be subject to YouTube's Terms of Service. You are solely
-              responsible for ensuring your use of PixelCatch complies with YouTube's ToS and all
-              applicable laws. PixelCatch is an independent tool and is not affiliated with, endorsed
-              by, or certified by Google LLC or YouTube.
+              Downloading YouTube content may be restricted by{" "}
+              <a className="text-red-400 underline" href="https://www.youtube.com/t/terms" target="_blank" rel="noopener noreferrer">YouTube's Terms of Service</a>.
+              You are solely responsible for ensuring your use of PixelCatch complies with YouTube's ToS
+              and all applicable laws. PixelCatch is an independent tool and is not affiliated with,
+              endorsed by, or certified by Google LLC or YouTube.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-3">6. Copyright and Intellectual Property</h2>
+            <h2 className="text-xl font-bold text-white mb-3">6. Copyright and Intellectual Property</h2>
             <p>
               Downloaded videos remain the intellectual property of their respective rights holders.
               PixelCatch grants you no rights to the content you download. You are responsible for
@@ -72,45 +83,53 @@ export default function PixelCatchTerms() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-3">7. No Warranty</h2>
+            <h2 className="text-xl font-bold text-white mb-3">7. Chrome Web Store Compliance</h2>
             <p>
-              PixelCatch is provided <strong>"as is"</strong> without warranty of any kind, express or
-              implied. We do not warrant that the extension will be error-free, uninterrupted, or
-              compatible with future versions of Chrome, YouTube, or yt-dlp. YouTube changes its
-              platform frequently; functionality may break at any time.
+              PixelCatch is distributed in compliance with the{" "}
+              <a className="text-red-400 underline" href="https://developer.chrome.com/docs/webstore/program-policies" target="_blank" rel="noopener noreferrer">Chrome Web Store Developer Program Policies</a>,
+              including single-purpose, minimum-permission, and user-data policies. The extension's single
+              purpose is to download YouTube videos via a local helper.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-3">8. Limitation of Liability</h2>
+            <h2 className="text-xl font-bold text-white mb-3">8. No Warranty</h2>
+            <p>
+              PixelCatch is provided <strong>"as is"</strong> without warranty of any kind, express or
+              implied. We do not warrant that the extension will be error-free, uninterrupted, or
+              compatible with future versions of Chrome, YouTube, or yt-dlp.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-white mb-3">9. Limitation of Liability</h2>
             <p>
               To the maximum extent permitted by law, we shall not be liable for any indirect,
               incidental, special, consequential, or punitive damages arising out of your use of
               or inability to use PixelCatch, including but not limited to loss of data, loss of
-              profits, or any claim by a third party.
+              profits, or any third-party claim.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-3">9. Updates and Discontinuation</h2>
+            <h2 className="text-xl font-bold text-white mb-3">10. Updates and Discontinuation</h2>
             <p>
-              We may update, modify, or discontinue PixelCatch at any time without notice. We are
-              under no obligation to maintain compatibility with any particular version of Chrome,
-              YouTube, or yt-dlp.
+              We may update, modify, or discontinue PixelCatch at any time. We are under no obligation
+              to maintain compatibility with any particular version of Chrome, YouTube, or yt-dlp.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-3">10. Governing Law</h2>
+            <h2 className="text-xl font-bold text-white mb-3">11. Governing Law</h2>
             <p>
-              These Terms are governed by the laws of the jurisdiction in which the developer is
-              located, without regard to conflict-of-law principles. Any disputes shall be resolved
-              in the courts of that jurisdiction.
+              These Terms are governed by the laws of the jurisdiction in which the developer is located,
+              without regard to conflict-of-law principles. Any disputes shall be resolved in the courts
+              of that jurisdiction.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-3">11. Changes to These Terms</h2>
+            <h2 className="text-xl font-bold text-white mb-3">12. Changes to These Terms</h2>
             <p>
               We may revise these Terms at any time by updating this page. Continued use of PixelCatch
               after changes are posted constitutes your acceptance of the revised Terms.
@@ -118,18 +137,27 @@ export default function PixelCatchTerms() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-slate-900 mb-3">12. Contact</h2>
+            <h2 className="text-xl font-bold text-white mb-3">13. Contact</h2>
             <p>
-              Questions about these Terms? Email us at{" "}
-              <a href="mailto:link2dawood123@gmail.com" className="text-blue-600 underline">
-                link2dawood123@gmail.com
-              </a>
-              .
+              Questions about these Terms? Email{" "}
+              <a href="mailto:dawood.dixeam@gmail.com" className="text-red-400 underline">
+                dawood.dixeam@gmail.com
+              </a>{" "}
+              or visit the{" "}
+              <a href="/extensions/pixel-catch/support" className="text-red-400 underline">
+                Support page
+              </a>.
             </p>
           </section>
 
         </div>
-      </div>
+
+        <div className="mt-16 pt-8 border-t border-white/10 flex flex-wrap justify-center gap-8 text-sm text-white/40">
+          <a href="/extensions/pixel-catch" className="hover:text-white transition-colors">Home</a>
+          <a href="/extensions/pixel-catch/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</a>
+          <a href="/extensions/pixel-catch/support" className="hover:text-white transition-colors">Support</a>
+        </div>
+      </section>
     </div>
   );
 }

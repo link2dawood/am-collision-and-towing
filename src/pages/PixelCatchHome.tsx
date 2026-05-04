@@ -3,7 +3,7 @@ export default function PixelCatchHome() {
     <div className="min-h-screen bg-[#0f1117] text-white">
 
       {/* Hero */}
-      <section className="max-w-4xl mx-auto px-6 pt-32 pb-20 text-center">
+      <section className="max-w-4xl mx-auto px-6 pt-20 md:pt-28 pb-20 text-center">
         <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-sm text-white/70 mb-8">
           <span className="w-2 h-2 rounded-full bg-green-400 inline-block"></span>
           Chrome Extension · macOS
@@ -13,25 +13,26 @@ export default function PixelCatchHome() {
           Pixel<span className="text-red-500">Catch</span>
         </h1>
 
-        <p className="text-xl text-white/60 max-w-2xl mx-auto mb-4 leading-relaxed">
-          Download YouTube videos — including Premium streams and members-only
-          uploads — entirely on your Mac. No servers. No tracking. Just your files.
+        <p className="text-xl text-white/60 max-w-2xl mx-auto mb-2 leading-relaxed">
+          A single-purpose Chrome extension that downloads YouTube videos to your Mac
+          using a local <code className="bg-white/10 px-1.5 py-0.5 rounded text-white/80 text-base">yt-dlp</code> helper.
+        </p>
+        <p className="text-base text-white/40 max-w-2xl mx-auto leading-relaxed">
+          No servers. No analytics. Files go straight to your Downloads folder.
         </p>
 
         <div className="flex flex-wrap justify-center gap-4 mt-10">
           <a
-            href="https://chromewebstore.google.com"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#how-it-works"
             className="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white font-bold px-8 py-4 rounded-xl transition-colors text-sm"
           >
-            Add to Chrome
+            How it works
           </a>
           <a
-            href="#how-it-works"
+            href="/extensions/pixel-catch/support"
             className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-8 py-4 rounded-xl transition-colors text-sm"
           >
-            How it works
+            Support
           </a>
         </div>
       </section>
@@ -126,17 +127,30 @@ export default function PixelCatchHome() {
         </p>
       </section>
 
+      {/* Disclaimer */}
+      <section className="max-w-4xl mx-auto px-6 pb-16">
+        <p className="text-xs text-white/30 text-center leading-relaxed">
+          PixelCatch is an independent tool and is not affiliated with, endorsed by, or
+          certified by Google LLC or YouTube. Use only with content you have a legal right
+          to download. You are responsible for complying with YouTube's Terms of Service
+          and applicable copyright law.
+        </p>
+      </section>
+
       {/* Footer links */}
       <footer className="border-t border-white/10 py-10 text-center text-sm text-white/30">
-        <div className="flex justify-center gap-8">
+        <div className="flex flex-wrap justify-center gap-6 sm:gap-8">
           <a href="/extensions/pixel-catch/privacy-policy" className="hover:text-white transition-colors">
             Privacy Policy
           </a>
           <a href="/extensions/pixel-catch/terms-and-conditions" className="hover:text-white transition-colors">
             Terms &amp; Conditions
           </a>
-          <a href="mailto:link2dawood123@gmail.com" className="hover:text-white transition-colors">
-            Contact
+          <a href="/extensions/pixel-catch/support" className="hover:text-white transition-colors">
+            Support
+          </a>
+          <a href="mailto:dawood.dixeam@gmail.com" className="hover:text-white transition-colors">
+            dawood.dixeam@gmail.com
           </a>
         </div>
         <p className="mt-4">© {new Date().getFullYear()} PixelCatch</p>
