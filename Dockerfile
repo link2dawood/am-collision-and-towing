@@ -7,7 +7,10 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 
 # Install dependencies
-RUN npm install -g pnpm && pnpm install --frozen-lockfile
+# Pin pnpm to v10 — matches lockfileVersion 9.0 and honors the
+# pnpm.onlyBuiltDependencies allowlist in package.json. An unpinned
+# `pnpm@latest` (now v11) makes ignored build scripts a fatal error.
+RUN npm install -g pnpm@10 && pnpm install --frozen-lockfile
 
 # Copy source
 COPY . .
