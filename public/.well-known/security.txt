@@ -1,0 +1,11 @@
+# Security policy for AM Collision and Towing.
+# Per RFC 9116. If you have found a security issue affecting
+# amcollisionandtowing.com or any of its subdomains, please use one of the
+# contact methods below. We do not run a bug bounty, but we respond to
+# good-faith reports.
+
+Contact: https://amcollisionandtowing.com/contact
+Contact: mailto:healthmakerus@gmail.com
+Expires: 2027-06-11T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://amcollisionandtowing.com/.well-known/security.txt
